@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Automation Setup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0c0c0e;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #141418;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #23232a;
+        }
+        h2 {
+            margin-top: 0;
+            color: #ff3366;
+            font-size: 22px;
+            text-align: center;
+            border-bottom: 2px solid #23232a;
+            padding-bottom: 15px;
+        }
+        .input-group {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #2d2d37;
+            background-color: #1c1c22;
+            color: #fff;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #ff3366, #ff668f);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3);
+        }
+        .status-box {
+            margin-top: 20px;
+            background: #1c1c22;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #ffb74d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Cloudflare & Telegram Automatic Setup</h2>
+    
+    <div class="input-group">
+        <label>১. ক্লাউডফ্লেয়ার পেজেস ফ্রন্টএন্ড ডোমেইন লিঙ্ক</label>
+        <input type="text" id="pages-url" readonly>
+    </div>
+
+    <div class="input-group">
+        <label>২. ক্লাউডফ্লেয়ার ওয়ার্কার ব্যাকএন্ড ডোমেইন লিঙ্ক</label>
+        <input type="text" id="worker-url" placeholder="https://your-worker.your-subdomain.workers.dev">
+    </div>
+
+    <button class="btn" id="setup-btn">কানেকশন ও বট অ্যাক্টিভেট করুন</button>
+
+    <div class="status-box" id="status-box" style="display: none;">
+        টেলিগ্রাম সার্ভারের সাথে সংযোগ স্থাপনের প্রক্রিয়া চলছে...
+    </div>
+</div>
+
+<script>
+    const token = '8389507802:AAH0KPeEktjgMeyVEH_BgToQHOkWqCEjGyc';
+    
+    // Auto-detect frontend URL
+    const currentFolderUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+    const pagesUrl = `${currentFolderUrl}/index.html`;
+    document.getElementById('pages-url').value = pagesUrl;
+
+    document.getElementById('setup-btn').addEventListener('click', async () => {
+        const workerUrl = document.getElementById('worker-url').value.trim();
+        const statusBox = document.getElementById('status-box');
+
+        if (!workerUrl) {
+            alert('অনুগ্রহ করে আপনার সঠিক ওয়ার্কার লিংকটি প্রবেশ করান।');
+            return;
+        }
+
+        statusBox.style.display = 'block';
+        statusBox.textContent = 'টেলিগ্রাম সার্ভার এবং ক্লাউডফ্লেয়ার রেজিস্টার করা হচ্ছে...';
+
+        try {
+            // ১. সেট চ্যাট মেনু বাটন লিংক
+            const menuRes = await fetch(`https://api.telegram.org/bot${token}/setChatMenuButton`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    menu_button: {
+                        type: 'web_app',
+                        text: 'Browse Videos 🎬',
+                        web_app: { url: pagesUrl }
+                    }
+                })
+            });
+
+            // ২. বটের সাথে ওয়ার্কারের ওয়েবহুক সংযোগ
+            const webhookRes = await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: workerUrl })
+            });
+
+            const menuData = await menuRes.json();
+            const webhookData = await webhookRes.json();
+
+            if (menuData.ok && webhookData.ok) {
+                statusBox.style.color = '#00e676';
+                statusBox.innerHTML = 'অ্যাক্টিভেশন সম্পন্ন হয়েছে! ✅<br><span style="font-size: 11px; color: #aaa;">এখন আপনি এই পেজটি বন্ধ করে বটের কাজ শুরু করতে পারেন।</span>';
+            } else {
+                statusBox.style.color = '#ff3366';
+                statusBox.textContent = 'ত্রুটি: রেজিস্ট্রেশন সফল হয়নি। সঠিক লিংক চেক করুন।';
+            }
+
+        } catch (e) {
+            statusBox.style.color = '#ff3366';
+            statusBox.textContent = 'কানেকশন ডোমেইন সংযোগ করতে ব্যর্থ হয়েছে।';
+        }
+    });
+</script>
+
+</body>
+</html>
