@@ -3,274 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Hub BD</title>
-    <!-- Telegram WebApp SDK -->
+    <title>Pron Hub BD</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Monetag SDK -->
     <script src='//libtl.com/sdk.js' data-zone='10518940' data-sdk='show_10518940'></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
-            --bg-dark: #090A0F;
-            --bg-card: #12141C;
-            --primary: #FF2E93;
-            --primary-glow: rgba(255, 46, 147, 0.4);
-            --secondary: #00F0FF;
-            --secondary-glow: rgba(0, 240, 255, 0.3);
+            --primary: #FF3366;
+            --secondary: #FF668F;
+            --dark-bg: #09090C;
+            --card-bg: #15151E;
             --text-light: #F3F4F6;
-            --text-dim: #9CA3AF;
-            --accent: #FFD700;
+            --text-muted: #9CA3AF;
+            --shadow: 0 8px 24px rgba(255, 51, 102, 0.2);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Poppins', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-
+        
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--dark-bg);
             color: var(--text-light);
             min-height: 100vh;
-            padding-bottom: 90px;
+            padding-bottom: 80px;
             overflow-x: hidden;
         }
-
+        
         .container {
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
+            padding: 15px;
+            max-width: 100%;
+        }
+        
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        /* Top Header */
-        .header {
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            margin-bottom: 15px;
         }
-
+        
         .logo {
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            font-size: 22px;
+            font-weight: 700;
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            filter: drop-shadow(0 2px 8px var(--primary-glow));
+            letter-spacing: 1.5px;
         }
 
-        /* Live Scrolling Notification Bar */
-        .ticker-wrapper {
-            background: rgba(255, 46, 147, 0.08);
-            border: 1px solid rgba(255, 46, 147, 0.2);
-            border-radius: 12px;
+        /* Ticker Notification Style */
+        .fancy-news-bar {
             display: flex;
             align-items: center;
-            padding: 10px 14px;
-            margin-bottom: 20px;
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid rgba(255, 51, 102, 0.25);
+            border-radius: 12px;
+            padding: 8px 12px;
             overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(255, 46, 147, 0.05);
         }
 
-        .ticker-icon {
-            color: var(--primary);
+        .fancy-icon {
             font-size: 18px;
-            margin-right: 12px;
-            animation: pulse 1.5s infinite alternate;
+            margin-right: 10px;
+            color: #fdd835;
+            animation: bounce 2s infinite alternate;
         }
 
-        .ticker-text-container {
+        .fancy-text {
             flex: 1;
             overflow: hidden;
             position: relative;
         }
 
-        .ticker-text {
+        .fancy-ticker span {
             display: inline-block;
             white-space: nowrap;
-            animation: scrollText 45s linear infinite;
-            font-size: 14px;
+            padding-left: 100%;
+            animation: scrollText 35s linear infinite;
+            font-size: 13px;
             font-weight: 500;
         }
 
-        .ticker-text span {
-            margin-right: 50px;
-        }
+        .highlight { color: #00e676; }
+        .highlight2 { color: #29b6f6; }
 
         @keyframes scrollText {
-            0% { transform: translate3d(100%, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.2); opacity: 1; }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-3px); }
         }
-
-        /* 2-Column Portrait Post Grid */
+        
+        /* 2 Column Tall/Portrait Layout */
         .post-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            gap: 15px;
         }
-
+        
         .post-card {
-            background: var(--bg-card);
-            border-radius: 18px;
+            background: var(--card-bg);
+            border-radius: 16px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .post-card:active {
             transform: scale(0.97);
         }
-
-        /* 3:4 Portrait Aspect Ratio */
+        
         .thumbnail-container {
             position: relative;
             width: 100%;
-            padding-top: 133.33%; /* Aspect ratio 3:4 */
+            /* 3:4 portrait ratio aspect-ratio */
+            aspect-ratio: 3 / 4.2;
             overflow: hidden;
+            background: #1e1e24;
         }
-
+        
         .post-thumbnail {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.3s ease;
         }
-
-        .card-overlay {
+        
+        .watch-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(9, 10, 15, 0.95) 10%, rgba(9, 10, 15, 0.4) 60%, transparent);
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
             padding: 12px;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
+            justify-content: center;
         }
-
+        
         .watch-btn {
-            background: linear-gradient(135deg, var(--primary), #FF5E62);
+            background: var(--gradient);
             color: white;
             border: none;
             width: 100%;
             padding: 10px;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px var(--primary-glow);
+            box-shadow: var(--shadow);
         }
-
-        /* Highly Highlighted Pagination Buttons */
+        
+        /* Highlighted Pagination Controls */
         .pagination {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 30px 0;
+            margin: 30px 0 10px;
             gap: 15px;
         }
-
+        
         .page-btn {
-            background: linear-gradient(135deg, var(--bg-card), #1D2130);
-            border: 2px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-light);
-            min-width: 110px;
-            padding: 12px 18px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 14px;
+            background: var(--gradient);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
             cursor: pointer;
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            gap: 8px;
+            transition: opacity 0.2s;
         }
-
-        .page-btn:not(:disabled):hover {
-            border-color: var(--secondary);
-            color: var(--secondary);
-            box-shadow: 0 0 15px var(--secondary-glow);
-            transform: translateY(-2px);
-        }
-
-        .page-btn.highlighted {
-            background: linear-gradient(135deg, var(--primary), #FF5E62);
-            border: none;
-            box-shadow: 0 6px 20px var(--primary-glow);
-        }
-
+        
         .page-btn:disabled {
             opacity: 0.3;
             cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
+            box-shadow: none;
         }
-
+        
         .page-info {
             font-weight: 600;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 15px;
+            color: var(--text-light);
+            background: var(--card-bg);
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        /* Immersive Video Player Container */
+        
+        /* Custom Video Container and Player */
         .video-container {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: #000;
-            z-index: 1000;
+            background: black;
+            z-index: 100;
             display: none;
+            flex-direction: column;
+            justify-content: center;
         }
-
+        
         .video-player {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
+            max-height: 100%;
         }
-
+        
         .player-header {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             align-items: center;
             background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
             z-index: 10;
         }
-
+        
         .back-btn {
             background: rgba(255,255,255,0.15);
             border: none;
@@ -278,413 +254,502 @@
             height: 44px;
             border-radius: 50%;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* 10 Seconds End-Screen/Reload View */
-        .end-screen {
+        .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            transition: opacity 0.3s;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 5px;
+            width: 0%;
+        }
+        
+        .control-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .time-display {
+            color: white;
+            font-size: 13px;
+        }
+        
+        /* 10-Second CountDown Overlay */
+        .replay-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(9, 10, 15, 0.95);
-            z-index: 100;
+            background: rgba(0,0,0,0.9);
+            z-index: 15;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 24px;
             text-align: center;
+            padding: 20px;
         }
 
-        .end-screen-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            color: var(--primary);
+        .replay-box {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 90%;
+            width: 320px;
+            box-shadow: var(--shadow);
         }
 
-        .end-screen-counter {
-            font-size: 48px;
-            font-weight: 800;
-            color: var(--secondary);
-            margin: 20px 0;
-            text-shadow: 0 0 15px var(--secondary-glow);
-        }
-
-        .end-screen-buttons {
+        .countdown-circle {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px dashed var(--primary);
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 280px;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            animation: spin 10s linear;
         }
 
-        .end-btn {
-            padding: 14px;
-            border-radius: 12px;
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .countdown-num {
+            position: absolute;
+            transform: rotate(-360deg); /* Counter spin so number stays upright */
+            font-size: 22px;
             font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
+        }
+
+        .replay-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .replay-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .replay-btn {
+            background: var(--gradient);
+            color: white;
             border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            box-shadow: var(--shadow);
         }
 
-        .end-btn-replay {
-            background: linear-gradient(135deg, var(--secondary), #00A3FF);
-            color: #000;
-        }
-
-        .end-btn-home {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* Interactive Ad Counter */
-        .ad-counter {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(9, 10, 15, 0.98);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 24px;
-        }
-
-        .ad-counter-text {
-            color: white;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        .ad-progress {
-            width: 80%;
-            max-width: 300px;
-            height: 8px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 10px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .ad-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            width: 0%;
-            border-radius: 10px;
-        }
-
-        .ad-skip {
-            color: white;
-            background: linear-gradient(135deg, var(--primary), #FF5E62);
-            border: none;
-            padding: 14px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 15px;
+        .replay-close-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-light);
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-weight: 500;
             cursor: pointer;
-            display: none;
-            box-shadow: 0 4px 15px var(--primary-glow);
+            width: 100%;
+            margin-top: 10px;
         }
-
-        /* Bottom Fixed Navigation Bar */
+        
+        /* Bottom Navigation Bar */
         .navigation {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(18, 20, 28, 0.95);
-            backdrop-filter: blur(15px);
+            background: var(--card-bg);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0 20px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            z-index: 500;
+            padding: 12px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            z-index: 50;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
-
+        
         .nav-btn {
             background: transparent;
             border: none;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--text-dim);
+            color: var(--text-muted);
             cursor: pointer;
             font-size: 11px;
-            font-weight: 600;
-            transition: all 0.3s;
-            gap: 4px;
+            font-weight: 500;
+            transition: color 0.3s, transform 0.3s;
         }
-
+        
         .nav-btn i {
             font-size: 20px;
+            margin-bottom: 4px;
         }
-
+        
         .nav-btn.active {
             color: var(--primary);
-            text-shadow: 0 0 10px var(--primary-glow);
+            transform: translateY(-2px);
         }
-
-        /* Rules Modal / Panel View */
-        .rules-container {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 24px;
-            margin-top: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-        }
-
-        .rules-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.06);
-            border: none;
-            color: var(--text-light);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
+        
+        /* Ad Loader Layout */
+        .ad-counter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(9, 9, 12, 0.95);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            z-index: 200;
+            display: none;
+            padding: 20px;
         }
-
-        .rules-title {
+        
+        .ad-counter-text {
+            color: white;
             font-size: 20px;
-            font-weight: 800;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        .ad-progress {
+            width: 80%;
+            max-width: 300px;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .ad-progress-bar {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+        }
+        
+        .ad-skip {
+            color: white;
+            background: var(--gradient);
+            border: none;
+            padding: 12px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Watchlist styles */
+        .watchlist-container {
+            padding: 10px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
             margin-bottom: 20px;
-            color: var(--primary);
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--primary);
         }
-
-        .important-note {
-            background: rgba(255, 46, 147, 0.08);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--primary);
-            font-weight: 500;
-            line-height: 1.5;
-            font-size: 13.5px;
+        
+        .watchlist-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 20px 0 10px;
+            padding-left: 10px;
+            border-left: 3px solid var(--primary);
+            font-weight: 600;
         }
-
-        .rules-list {
-            list-style: none;
-        }
-
-        .rules-list li {
-            margin-bottom: 12px;
-            padding-left: 24px;
-            position: relative;
-            line-height: 1.5;
-            font-size: 13.5px;
-            color: var(--text-light);
-        }
-
-        .rules-list li::before {
-            content: '✦';
-            color: var(--secondary);
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .rules-btn {
-            position: fixed;
-            bottom: 95px;
-            right: 16px;
-            background: linear-gradient(135deg, var(--secondary), #00A3FF);
-            color: #000;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px var(--secondary-glow);
-            z-index: 400;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Welcome Screen style */
-        .welcome-wrapper {
-            text-align: center;
-            padding: 40px 10px;
-        }
-
-        .logo-circle-container {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .logo-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--primary);
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-
-        .logo-dot:nth-child(2) {
-            animation-delay: 0.2s;
-            background: var(--secondary);
-        }
-
-        .logo-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
-        }
-
-        .welcome-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 15px;
-        }
-
-        .welcome-desc {
-            color: var(--text-dim);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .start-btn {
-            background: linear-gradient(135deg, var(--primary), #FF5E62);
-            color: white;
-            border: none;
-            padding: 16px 45px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 5px 20px var(--primary-glow);
-            text-transform: uppercase;
-        }
-
-        .watchlist-container {
-            padding: 10px 0;
-        }
-
+        
         .watchlist-item {
-            background: var(--bg-card);
-            border-radius: 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
             padding: 12px;
             margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
             display: flex;
             align-items: center;
-            gap: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
+        
         .watchlist-thumbnail {
-            width: 60px;
-            height: 80px;
-            border-radius: 10px;
+            width: 50px;
+            height: 65px;
+            border-radius: 8px;
             object-fit: cover;
+            margin-right: 15px;
         }
-
+        
         .watchlist-info {
             flex: 1;
         }
+        
+        .watchlist-item-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        
+        .watchlist-item-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
 
-        .watchlist-time {
-            font-size: 12px;
-            color: var(--text-dim);
+        /* Rules styles */
+        .rules-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            position: relative;
+        }
+        
+        .rules-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .rules-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .rules-list li {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+        
+        .rules-list li::before {
+            content: '•';
+            color: var(--primary);
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        .important-note {
+            background: rgba(255, 51, 102, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .rules-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 15px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .rules-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 20px;
+            cursor: pointer;
         }
 
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: var(--text-dim);
+        }
+        
+        .empty-icon {
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
+        
+        .empty-text {
+            color: var(--text-muted);
+            font-size: 14px;
         }
 
-        .empty-state i {
-            font-size: 50px;
-            margin-bottom: 15px;
-            color: rgba(255,255,255,0.05);
+        /* Welcome page */
+        .welcome-container {
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            margin: 15px 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .welcome-desc {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .welcome-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+        
+        .video-container.hide-controls .player-header,
+        .video-container.hide-controls .player-controls {
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-
-    <div class="container" id="app-container">
-        <!-- Dynamic Content Injected Here -->
-    </div>
-
-    <!-- Video Player Container with Custom Controls Overlay -->
+    <div class="container" id="app-container"></div>
+    
+    <!-- Video Player Screen -->
     <div class="video-container" id="video-container">
         <div class="player-header">
             <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
         </div>
-        <video class="video-player" id="video-player" controls controlsList="nodownload"></video>
+        <video class="video-player" id="video-player" playsinline></video>
         
-        <!-- 10s End-Screen Countdown Panel -->
-        <div class="end-screen" id="end-screen">
-            <div class="end-screen-title">ভিডিও শেষ হয়েছে</div>
-            <div style="font-size: 14px; color: var(--text-dim);">The video has ended. Going back in:</div>
-            <div class="end-screen-counter" id="end-counter">10</div>
-            <div class="end-screen-buttons">
-                <button class="end-btn end-btn-replay" id="replay-btn">
-                    <i class="fas fa-redo"></i> Replay Video (1 Ad)
+        <!-- Replay Overlay with 10s Countdown -->
+        <div class="replay-overlay" id="replay-overlay">
+            <div class="replay-box">
+                <div class="countdown-circle">
+                    <span class="countdown-num" id="countdown-num">10</span>
+                </div>
+                <div class="replay-title">পুনরায় দেখতে চান? / Replay Video?</div>
+                <div class="replay-subtitle">
+                    ১০ সেকেন্ডের মধ্যে নিচের বাটনে ক্লিক করে ১টি শর্ট বিজ্ঞাপন দেখে ভিডিওটি আবার দেখতে পারবেন।
+                </div>
+                <button class="replay-btn" id="replay-action-btn">
+                    <i class="fas fa-redo"></i> ১টি বিজ্ঞাপনে পুনরায় প্লে করুন
                 </button>
-                <button class="end-btn end-btn-home" id="exit-btn">
-                    <i class="fas fa-home"></i> Exit to Home
-                </button>
+                <button class="replay-close-btn" id="replay-close-btn">হোমপেজে ফিরে যান</button>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="control-buttons">
+                <button class="control-btn" id="play-pause-btn"><i class="fas fa-pause"></i></button>
+                <div class="time-display" id="time-display">0:00 / 0:00</div>
+                <button class="control-btn" id="fullscreen-btn"><i class="fas fa-expand"></i></button>
             </div>
         </div>
     </div>
-
-    <!-- Monetag Native Ad Counter System -->
+    
+    <!-- Fake Ad Interval Screen -->
     <div class="ad-counter" id="ad-counter">
-        <div class="ad-counter-text" id="ad-instructions">
-            বিজ্ঞাপনটি লোড হচ্ছে...<br>
-            Please wait while the ad loads
-        </div>
+        <div class="ad-counter-text">বিজ্ঞাপন লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন<br><span id="ad-count-text" style="color: var(--primary); font-size: 16px;">বিজ্ঞাপন ১ অফ ২</span></div>
         <div class="ad-progress">
             <div class="ad-progress-bar" id="ad-progress-bar"></div>
         </div>
-        <button class="ad-skip" id="ad-skip-btn">Continue in <span id="skip-timer">5</span>s</button>
+        <button class="ad-skip" id="ad-skip-btn">কন্টিনিউ করুন (<span id="skip-timer">5</span>s)</button>
     </div>
-
-    <!-- Quick Info / Rules Button -->
+    
     <button class="rules-btn" id="rules-btn"><i class="fas fa-info"></i></button>
-
-    <!-- Bottom Navigation Bar -->
+    
+    <!-- Navigation -->
     <div class="navigation">
         <button class="nav-btn active" id="home-btn">
-            <i class="fas fa-th-large"></i>
+            <i class="fas fa-home"></i>
             <span>Home</span>
         </button>
         <button class="nav-btn" id="watchlist-btn">
@@ -692,56 +757,61 @@
             <span>Watchlist</span>
         </button>
     </div>
-
+    
     <script src="content.js"></script>
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.enableClosingConfirmation();
-
-        // State variables
+        
         let currentPage = 1;
         let currentView = 'home';
         let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos')) || {};
-        let adCount = 0;
-        let totalAdsRequired = 2; // Default for new video
-        const postsPerPage = 20;
+        let totalAdsCount = 0; 
+        let requiredAds = 2; // Default 2 ads for first watch
         let currentVideoId = null;
         let adInterval;
         let secondsLeft = 5;
-        let endScreenInterval;
-        let endCountdown = 10;
-
-        // Elements
+        let controlsTimeout;
+        let isControlsVisible = true;
+        let replayTimerInterval;
+        let replaySecondsLeft = 10;
+        
         const appContainer = document.getElementById('app-container');
         const homeBtn = document.getElementById('home-btn');
         const watchlistBtn = document.getElementById('watchlist-btn');
         const videoContainer = document.getElementById('video-container');
         const videoPlayer = document.getElementById('video-player');
         const backBtn = document.getElementById('back-btn');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const timeDisplay = document.getElementById('time-display');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
         const adCounter = document.getElementById('ad-counter');
+        const adCountText = document.getElementById('ad-count-text');
         const adProgressBar = document.getElementById('ad-progress-bar');
         const adSkipBtn = document.getElementById('ad-skip-btn');
         const skipTimerDisplay = document.getElementById('skip-timer');
-        const adInstructions = document.getElementById('ad-instructions');
         const rulesBtn = document.getElementById('rules-btn');
+
+        const replayOverlay = document.getElementById('replay-overlay');
+        const countdownNum = document.getElementById('countdown-num');
+        const replayActionBtn = document.getElementById('replay-action-btn');
+        const replayCloseBtn = document.getElementById('replay-close-btn');
         
-        // End Screen Elements
-        const endScreen = document.getElementById('end-screen');
-        const endCounterDisplay = document.getElementById('end-counter');
-        const replayBtn = document.getElementById('replay-btn');
-        const exitBtn = document.getElementById('exit-btn');
-
-        // Init App
-        if (!localStorage.getItem('welcomeShown')) {
-            showWelcomeMessage();
-            localStorage.setItem('welcomeShown', 'true');
-        } else {
-            loadHomePage();
+        initApp();
+        
+        function initApp() {
+            if (!localStorage.getItem('welcomeShown')) {
+                showWelcomeMessage();
+                localStorage.setItem('welcomeShown', 'true');
+            } else {
+                loadHomePage();
+            }
+            setupEventListeners();
         }
-
-        setupEventListeners();
-
+        
         function setupEventListeners() {
             homeBtn.addEventListener('click', () => {
                 currentView = 'home';
@@ -749,313 +819,367 @@
                 watchlistBtn.classList.remove('active');
                 loadHomePage();
             });
-
+            
             watchlistBtn.addEventListener('click', () => {
                 currentView = 'watchlist';
                 watchlistBtn.classList.add('active');
                 homeBtn.classList.remove('active');
                 loadWatchlist();
             });
-
+            
             backBtn.addEventListener('click', closePlayer);
+            
+            playPauseBtn.addEventListener('click', () => {
+                if (videoPlayer.paused) {
+                    videoPlayer.play();
+                } else {
+                    videoPlayer.pause();
+                }
+                resetControlsTimeout();
+            });
+            
+            progressContainer.addEventListener('click', (e) => {
+                const rect = progressContainer.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                videoPlayer.currentTime = pos * videoPlayer.duration;
+                resetControlsTimeout();
+            });
+            
+            fullscreenBtn.addEventListener('click', () => {
+                if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
+                else if (videoContainer.webkitRequestFullscreen) videoContainer.webkitRequestFullscreen();
+                resetControlsTimeout();
+            });
+            
+            videoPlayer.addEventListener('play', () => {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            });
+            
+            videoPlayer.addEventListener('pause', () => {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            });
+            
+            videoPlayer.addEventListener('timeupdate', () => {
+                const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                progressBar.style.width = `${percent}%`;
+                timeDisplay.textContent = `${formatTime(videoPlayer.currentTime)} / ${formatTime(videoPlayer.duration)}`;
+            });
+            
+            videoPlayer.addEventListener('ended', showReplayCountdown);
+            
+            videoContainer.addEventListener('mousemove', () => {
+                showControls();
+                resetControlsTimeout();
+            });
+            
+            videoContainer.addEventListener('touchstart', () => {
+                showControls();
+                resetControlsTimeout();
+            });
+            
             rulesBtn.addEventListener('click', showRules);
 
-            // Ad Skip Click flow
+            // Replay actions
+            replayCloseBtn.addEventListener('click', () => {
+                clearInterval(replayTimerInterval);
+                closePlayer();
+            });
+
+            replayActionBtn.addEventListener('click', () => {
+                clearInterval(replayTimerInterval);
+                replayOverlay.style.display = 'none';
+                requiredAds = 1; // 1 ad to replay
+                totalAdsCount = 1;
+                showAd();
+            });
+            
             adSkipBtn.addEventListener('click', () => {
                 if (secondsLeft <= 0) {
                     clearInterval(adInterval);
                     adCounter.style.display = 'none';
-
-                    // Invoke Monetag SDK ad promise
+                    
+                    // Trigger Monetag Ads
                     show_10518940().then(() => {
-                        handleAdSuccess();
+                        handleAdComplete();
                     }).catch(() => {
-                        handleAdSuccess(); // Fallback bypass to ensure standard video playback flow
+                        handleAdComplete(); // Fallback play
                     });
                 }
             });
-
-            // Video State Event Listeners
-            videoPlayer.addEventListener('ended', showVideoEndScreen);
-
-            // End Screen Actions
-            replayBtn.addEventListener('click', () => {
-                clearInterval(endScreenInterval);
-                endScreen.style.display = 'none';
-                // Requiring 1 ad for replay
-                startAdProcess(currentVideoId, 1);
-            });
-
-            exitBtn.addEventListener('click', () => {
-                clearInterval(endScreenInterval);
-                closePlayer();
-            });
         }
 
+        function handleAdComplete() {
+            if (totalAdsCount < requiredAds) {
+                totalAdsCount++;
+                showAd();
+            } else {
+                playVideo(currentVideoId);
+            }
+        }
+        
+        function showControls() {
+            videoContainer.classList.remove('hide-controls');
+            isControlsVisible = true;
+        }
+        
+        function hideControls() {
+            videoContainer.classList.add('hide-controls');
+            isControlsVisible = false;
+        }
+        
+        function resetControlsTimeout() {
+            clearTimeout(controlsTimeout);
+            showControls();
+            controlsTimeout = setTimeout(hideControls, 4000);
+        }
+        
         function showWelcomeMessage() {
             appContainer.innerHTML = `
-                <div class="welcome-wrapper">
-                    <div class="logo-circle-container">
-                        <div class="logo-dot"></div>
-                        <div class="logo-dot"></div>
-                        <div class="logo-dot"></div>
-                    </div>
-                    <h1 class="welcome-title">Premium Hub BD</h1>
+                <div class="welcome-container">
+                    <div style="font-size: 55px; margin-bottom: 10px;">👋</div>
+                    <h1 class="welcome-title">Welcome to Pron Hub BD</h1>
                     <p class="welcome-desc">
-                        আমাদের এক্সক্লুসিভ পোর্টালে আপনাকে স্বাগতম। হাই-স্পিড ভিডিও স্ট্রিমিং এবং দৈনিক নতুন আপডেট পেতে এগিয়ে যান।<br><br>
-                        Welcome to our premium portal. Experience fluid speed media delivery and instant daily streams.
+                        আমাদের উচ্চমানের পোর্ট্রেট ভিডিওসমূহ উপভোগ করতে এবং নিয়মিত আপডেট পেতে মিনি অ্যাপে জয়েন করুন।
                     </p>
-                    <button class="start-btn" id="start-btn">Get Started / শুরু করুন</button>
+                    <button class="welcome-btn" onclick="loadHomePage()">শুরু করুন / Get Started</button>
                 </div>
             `;
-            document.getElementById('start-btn').addEventListener('click', loadHomePage);
         }
-
+        
+        function showRules() {
+            appContainer.innerHTML = `
+                <div class="rules-container">
+                    <button class="rules-close" id="rules-close-btn"><i class="fas fa-times"></i></button>
+                    <h2 class="rules-title">নির্দেশনা ও নিয়মাবলি / Rules</h2>
+                    
+                    <div class="important-note">
+                        <strong>জরুরি সতর্কতা:</strong> বিজ্ঞাপন এড়িয়ে বা কেটে গেলে ভিডিও প্লে হবে না। প্রতিটি বিজ্ঞাপনের শেষে অবশই কন্টিনিউ করতে হবে।
+                    </div>
+                    
+                    <ul class="rules-list">
+                        <li>একটি নতুন ভিডিও প্লে করতে আপনাকে ২টি বিজ্ঞাপন অতিক্রম করতে হবে।</li>
+                        <li>পূর্বে দেখা যেকোনো ভিডিও পুনরায় ১টি বিজ্ঞাপন দেখে ওয়াচলিস্ট থেকে প্লে করতে পারেন।</li>
+                        <li>ভিডিওর শেষে ১০ সেকেন্ড সময় থাকবে, আপনি চাইলে ১টি বিজ্ঞাপন দেখে সাথে সাথেই ভিডিওটি পুনরায় প্লে করতে পারেন।</li>
+                        <li>সফলভাবে বিজ্ঞাপন দেখার পর ভিডিও স্বয়ংক্রিয়ভাবে আরম্ভ হবে।</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('rules-close-btn').addEventListener('click', () => {
+                if (currentView === 'home') loadHomePage();
+                else loadWatchlist();
+            });
+        }
+        
         function loadHomePage() {
             const availablePosts = posts.filter(post => !watchedVideos[post.id]);
+            const postsPerPage = 10;
             const totalPages = Math.ceil(availablePosts.length / postsPerPage) || 1;
-
-            if (currentPage > totalPages) {
-                currentPage = totalPages;
-            }
-
+            
+            if (currentPage > totalPages) currentPage = totalPages;
             const startIndex = (currentPage - 1) * postsPerPage;
             const pagePosts = availablePosts.slice(startIndex, startIndex + postsPerPage);
-
+            
             let html = `
                 <div class="header">
-                    <div class="logo">Premium Hub</div>
-                </div>
-
-                <div class="ticker-wrapper">
-                    <i class="fas fa-bullhorn ticker-icon"></i>
-                    <div class="ticker-text-container">
-                        <div class="ticker-text">
-                            <span>📢 <strong>জরুরি নোটিশ:</strong> ভিডিও দেখতে হলে বিজ্ঞাপন দেখতে হবে এবং প্রতিটি বিজ্ঞাপনে ৫ সেকেন্ড দেখার পর কন্টিনিউ বাটনে ক্লিক করতে হবে।</span>
-                            <span>📢 <strong>Important Note:</strong> To stream video, complete the 2 required ads properly. Click "Continue" after the 5s timer expires.</span>
-                            <span>🏠 ভিডিও দেখা শেষে ১০ সেকেন্ডের কাউন্টডাউন স্ক্রিনে রি-প্লে করার সুযোগ পাবেন।</span>
+                    <div class="header-top">
+                        <div class="logo">Pron Hub BD</div>
+                    </div>
+                    <div class="fancy-news-bar">
+                        <div class="fancy-icon">📢</div>
+                        <div class="fancy-text">
+                            <div class="fancy-ticker">
+                                <span>
+                                    <strong>👋 স্বাগতম!</strong> ভিডিও দেখতে যথাক্রমে ২টি বিজ্ঞাপন সম্পন্ন করতে হবে। &nbsp;&nbsp;&nbsp;
+                                    <strong class="highlight">🔄 ভিডিও শেষে রি-প্লে অপশন পাবেন।</strong> &nbsp;&nbsp;&nbsp;
+                                    <strong>🏠 সম্পন্ন হবার পর পুনরায় হোমপেজে ফিরবে।</strong>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-
+            
             if (pagePosts.length === 0) {
                 html += `
                     <div class="empty-state">
-                        <i class="far fa-folder-open"></i>
-                        <p>সব ভিডিও দেখা শেষ! ওয়াচলিস্ট চেক করুন।</p>
+                        <div class="empty-icon"><i class="far fa-folder-open"></i></div>
+                        <div class="empty-text">সমস্ত উপলব্ধ ভিডিও দেখা শেষ! ওয়াচলিস্ট চেক করুন।</div>
                     </div>
                 `;
             } else {
-                html += `<div class="post-grid">`;
+                html += '<div class="post-grid">';
                 pagePosts.forEach(post => {
                     html += `
-                        <div class="post-card" onclick="startAdProcess('${post.id}', 2)">
+                        <div class="post-card">
                             <div class="thumbnail-container">
-                                <img src="${post.thumbnail}" class="post-thumbnail" loading="lazy">
-                                <div class="card-overlay">
-                                    <button class="watch-btn"><i class="fas fa-play"></i> Stream</button>
+                                <img src="${post.thumbnail}" class="post-thumbnail" alt="Thumb">
+                                <div class="watch-overlay">
+                                    <button class="watch-btn" onclick="triggerWatchFlow('${post.id}', 2)">
+                                        <i class="fas fa-play"></i> প্লে করুন
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     `;
                 });
-                html += `</div>`;
-
-                // Prominent Highlighted Pagination
+                html += '</div>';
+                
                 html += `
                     <div class="pagination">
                         <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                            <i class="fas fa-arrow-left"></i> Prev
+                            <i class="fas fa-chevron-left"></i> পূর্ববর্তী
                         </button>
-                        <span class="page-info">${currentPage} / ${totalPages}</span>
-                        <button class="page-btn highlighted" onclick="changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
-                            Next <i class="fas fa-arrow-right"></i>
+                        <span class="page-info">Page ${currentPage} / ${totalPages}</span>
+                        <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
+                            পরবর্তী <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 `;
             }
-
+            
             appContainer.innerHTML = html;
         }
-
+        
         function loadWatchlist() {
             let html = `
                 <div class="watchlist-container">
-                    <div class="rules-title" style="margin-bottom: 20px;">
-                        <i class="fas fa-history" style="color: var(--primary);"></i> Watch History / ওয়াচলিস্ট
+                    <div class="section-title">
+                        <i class="fas fa-history"></i>
+                        পূর্বে দেখা ভিডিওসমূহ (Watchlist)
                     </div>
             `;
-
-            const historyKeys = Object.keys(watchedVideos);
-
-            if (historyKeys.length === 0) {
+            
+            const watchIds = Object.keys(watchedVideos);
+            if (watchIds.length === 0) {
                 html += `
                     <div class="empty-state">
-                        <i class="far fa-clock"></i>
-                        <p>এখনো কোনো ভিডিও দেখা হয়নি।</p>
+                        <div class="empty-icon"><i class="far fa-clock"></i></div>
+                        <div class="empty-text">আপনি এখনও কোনো ভিডিও দেখেননি।</div>
                     </div>
                 `;
             } else {
-                historyKeys.forEach(id => {
+                const list = [];
+                watchIds.forEach(id => {
                     const post = posts.find(p => p.id === id);
                     if (post) {
-                        html += `
-                            <div class="watchlist-item" onclick="startAdProcess('${post.id}', 1)">
-                                <img src="${post.thumbnail}" class="watchlist-thumbnail">
-                                <div class="watchlist-info">
-                                    <div style="font-weight:600; color:var(--text-light);">Video Code: #${post.id}</div>
-                                    <div class="watchlist-time">ইতিমধ্যে দেখা হয়েছে (1 ad to rewatch)</div>
-                                </div>
-                                <i class="fas fa-play" style="color: var(--secondary); font-size: 16px;"></i>
-                            </div>
-                        `;
+                        list.push({ post, timestamp: watchedVideos[id] });
                     }
                 });
+                
+                list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                list.forEach(item => {
+                    const dateStr = new Date(item.timestamp).toLocaleDateString();
+                    html += `
+                        <div class="watchlist-item" onclick="triggerWatchFlow('${item.post.id}', 1)">
+                            <img src="${item.post.thumbnail}" class="watchlist-thumbnail" alt="Thumb">
+                            <div class="watchlist-info">
+                                <div class="watchlist-item-title">কন্টেন্ট আইডি: #${item.post.id}</div>
+                                <div class="watchlist-item-time">সংরক্ষণ: ${dateStr}</div>
+                            </div>
+                            <i class="fas fa-play" style="color: var(--primary); font-size: 16px;"></i>
+                        </div>
+                    `;
+                });
             }
-
-            html += `</div>`;
+            html += '</div>';
             appContainer.innerHTML = html;
         }
-
-        function changePage(targetPage) {
-            currentPage = targetPage;
+        
+        function changePage(newPage) {
+            currentPage = newPage;
             loadHomePage();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo(0, 0);
         }
-
-        // Ads Flow Controller
-        function startAdProcess(postId, adsRequired) {
+        
+        function triggerWatchFlow(postId, adsRequired) {
             currentVideoId = postId;
-            totalAdsRequired = adsRequired;
-            adCount = 1;
-            runAdCycle();
+            requiredAds = adsRequired;
+            totalAdsCount = 1;
+            showAd();
         }
-
-        function runAdCycle() {
+        
+        function showAd() {
             secondsLeft = 5;
             skipTimerDisplay.textContent = secondsLeft;
             adSkipBtn.style.display = 'none';
             adCounter.style.display = 'flex';
-
-            adInstructions.innerHTML = `
-                <span style="color: var(--primary); font-size: 18px; font-weight:800;">ADVERTISEMENT ${adCount} of ${totalAdsRequired}</span><br>
-                ভিডিওটি প্লে করার পূর্বে বিজ্ঞাপনটি সম্পূর্ণ দেখুন।<br>
-                Please verify ad progression before streaming.
-            `;
-
-            let progress = 0;
+            adCountText.textContent = `বিজ্ঞাপন ${totalAdsCount} অফ ${requiredAds}`;
             adProgressBar.style.width = '0%';
-
+            
+            let progress = 0;
             adInterval = setInterval(() => {
-                progress += 1;
+                progress += 2;
                 adProgressBar.style.width = `${progress}%`;
-
+                
                 if (progress % 20 === 0 && secondsLeft > 0) {
                     secondsLeft--;
                     skipTimerDisplay.textContent = secondsLeft;
                 }
-
+                
                 if (progress >= 100) {
                     clearInterval(adInterval);
                     adSkipBtn.style.display = 'block';
                 }
-            }, 50);
+            }, 100);
         }
-
-        function handleAdSuccess() {
-            if (adCount < totalAdsRequired) {
-                adCount++;
-                runAdCycle();
-            } else {
-                adCounter.style.display = 'none';
-                playVideo(currentVideoId);
-            }
-        }
-
+        
         function playVideo(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
-
-            // Track state in local storage
+            
             watchedVideos[postId] = new Date().toISOString();
             localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
-
-            // Setup and stream
-            videoContainer.style.display = 'block';
-            endScreen.style.display = 'none';
+            
+            videoContainer.style.display = 'flex';
+            replayOverlay.style.display = 'none';
             videoPlayer.src = post.videoLink;
             videoPlayer.load();
-            videoPlayer.play().catch(err => console.log("Auto-playback triggered manual verification: ", err));
+            
+            showControls();
+            resetControlsTimeout();
+            
+            videoPlayer.play().catch(e => {
+                console.log('Autoplay standard blocked, waiting interact');
+            });
         }
 
-        function showVideoEndScreen() {
-            endCountdown = 10;
-            endCounterDisplay.textContent = endCountdown;
-            endScreen.style.display = 'flex';
-
-            endScreenInterval = setInterval(() => {
-                endCountdown--;
-                endCounterDisplay.textContent = endCountdown;
-                if (endCountdown <= 0) {
-                    clearInterval(endScreenInterval);
+        function showReplayCountdown() {
+            replaySecondsLeft = 10;
+            countdownNum.textContent = replaySecondsLeft;
+            replayOverlay.style.display = 'flex';
+            
+            replayTimerInterval = setInterval(() => {
+                replaySecondsLeft--;
+                countdownNum.textContent = replaySecondsLeft;
+                
+                if (replaySecondsLeft <= 0) {
+                    clearInterval(replayTimerInterval);
                     closePlayer();
                 }
             }, 1000);
         }
 
         function closePlayer() {
-            clearInterval(endScreenInterval);
             videoPlayer.pause();
-            videoPlayer.src = "";
             videoContainer.style.display = 'none';
-            endScreen.style.display = 'none';
-
-            if (currentView === 'home') {
-                loadHomePage();
-            } else {
-                loadWatchlist();
-            }
+            replayOverlay.style.display = 'none';
+            clearInterval(replayTimerInterval);
+            
+            if (currentView === 'home') loadHomePage();
+            else loadWatchlist();
         }
-
-        function showRules() {
-            appContainer.innerHTML = `
-                <div class="rules-container">
-                    <button class="rules-close" id="rules-close-btn"><i class="fas fa-times"></i></button>
-                    
-                    <div class="rules-title">
-                        <i class="fas fa-shield-alt"></i> ব্যবহারের নিয়মাবলী / Terms & Rules
-                    </div>
-
-                    <div class="important-note">
-                        ⚠️ <strong>বিশেষ সতর্কবার্তা:</strong> প্রতিটি বিজ্ঞাপন ৫ সেকেন্ডের জন্য চলাকালীন অপেক্ষা করতে হবে, অন্যথায় ভিডিও লক হয়ে যাবে।
-                    </div>
-
-                    <ul class="rules-list">
-                        <li>প্রতিটি নতুন ভিডিও প্লে করার পূর্বে আপনাকে বাধ্যতামূলক ২টি ছোট বিজ্ঞাপন দেখতে হবে।</li>
-                        <li>পূর্বে একবার দেখা ভিডিও ওয়াচলিস্ট থেকে পুনরায় প্লে করতে শুধুমাত্র ১টি বিজ্ঞাপন দেখতে হবে।</li>
-                        <li>ভিডিও শেষ হওয়ার সাথে সাথে হোমপেজে ফেরত যাবে না। সেখানে ১০ সেকেন্ডের কাউন্টডাউন চলবে।</li>
-                        <li>কাউন্টডাউন স্ক্রিনে থাকা অবস্থায় আপনি চাইলে "Replay Video" বাটনে চাপ দিয়ে ১টি বিজ্ঞাপনের মাধ্যমে সাথে সাথে আবার প্লে করতে পারেন।</li>
-                        <li>নিয়ম না মানলে সার্ভার আপনাকে স্বয়ংক্রিয়ভাবে ব্লক করে দিতে পারে।</li>
-                    </ul>
-
-                    <ul class="rules-list" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                        <li style="color: var(--text-dim);">You must clear 2 standard ads before loading a new premium video.</li>
-                        <li style="color: var(--text-dim);">Rewatching finished content from the Watch History section requires only 1 ad validation step.</li>
-                    </ul>
-                </div>
-            `;
-
-            document.getElementById('rules-close-btn').addEventListener('click', () => {
-                if (currentView === 'home') {
-                    loadHomePage();
-                } else {
-                    loadWatchlist();
-                }
-            });
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
-
+        
+        window.triggerWatchFlow = triggerWatchFlow;
         window.changePage = changePage;
+        window.loadHomePage = loadHomePage;
     </script>
 </body>
 </html>
