@@ -21,7 +21,7 @@
             --text-muted: #9CA3AF;
             --shadow: 0 8px 32px rgba(255, 51, 102, 0.25);
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-            --glass: rgba(17, 17, 25, 0.85);
+            --glass: rgba(17, 17, 25, 0.95);
         }
         
         * {
@@ -32,27 +32,38 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* Centered Mobile Layout for Big Screens */
+        /* Centered Mobile Layout for Big Screens (Desktop prevention) */
         body {
             background-color: #030305;
             color: var(--text-light);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            overflow-x: hidden;
+            align-items: center;
+            overflow: hidden; /* Prevent native window scroll */
         }
 
+        /* Fixed Mobile Container Viewport Frame */
         .phone-wrapper {
             width: 100%;
-            max-width: 480px; /* Fixed maximum width */
-            min-height: 100vh;
+            max-width: 480px;
+            height: 100vh;
             background-color: var(--dark-bg);
             position: relative;
-            padding-bottom: 90px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Locks everything inside the frame */
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
             border-left: 1px solid rgba(255, 255, 255, 0.03);
             border-right: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        /* Scrollable content area ONLY */
+        .app-content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 110px; /* Cushion space for safe static layouts */
+            -webkit-overflow-scrolling: touch;
         }
         
         .container {
@@ -302,7 +313,7 @@
             box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
         }
         
-        /* Custom Video Container and Player */
+        /* Fixed Video Container relative to Phone viewport */
         .video-container {
             position: absolute;
             top: 0;
@@ -524,7 +535,7 @@
             background: rgba(255, 255, 255, 0.05);
         }
         
-        /* Bottom Navigation Bar */
+        /* Bottom Navigation Bar - Perfectly Fixed to viewport frame */
         .navigation {
             position: absolute;
             bottom: 0;
@@ -533,7 +544,7 @@
             background: var(--glass);
             display: flex;
             justify-content: space-around;
-            padding: 14px 0;
+            padding: 16px 0;
             box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
             z-index: 50;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -568,7 +579,7 @@
             color: var(--primary);
         }
         
-        /* Ad Loader Layout */
+        /* Fixed Ad Loader Layer overlay */
         .ad-counter {
             position: absolute;
             top: 0;
@@ -737,6 +748,7 @@
             color: #FF80A0;
         }
         
+        /* Static Floating info/rules button relative to mobile frame */
         .rules-btn {
             position: absolute;
             bottom: 104px;
@@ -860,11 +872,15 @@
     </style>
 </head>
 <body>
-    <!-- Center Screen Wrapper -->
+    <!-- Center Screen Mobile Frame Wrapper -->
     <div class="phone-wrapper">
-        <div class="container" id="app-container"></div>
         
-        <!-- Video Player Screen -->
+        <!-- Only this div scrolls -->
+        <div class="app-content-scroll" id="scroll-viewport">
+            <div class="container" id="app-container"></div>
+        </div>
+        
+        <!-- Video Player Screen (Strictly absolute/fixed overlay to Phone viewport) -->
         <div class="video-container" id="video-container">
             <div class="player-header">
                 <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
@@ -900,7 +916,7 @@
             </div>
         </div>
         
-        <!-- Fake Ad Interval Screen -->
+        <!-- Fake Ad Interval Screen (Overlay to viewport) -->
         <div class="ad-counter" id="ad-counter">
             <div class="ad-counter-text" id="ad-status-header">Preparing secure ad streams...</div>
             <div class="ad-progress">
@@ -909,9 +925,10 @@
             <div class="ad-counter-subtext" id="ad-status-subtext">Verification step in progress. Please do not close.</div>
         </div>
         
+        <!-- Info button positioned relative to Mobile wrapper viewport -->
         <button class="rules-btn" id="rules-btn"><i class="fas fa-info"></i></button>
         
-        <!-- Navigation -->
+        <!-- Navigation Bar fixed at bottom of Phone viewport -->
         <div class="navigation">
             <button class="nav-btn active" id="home-btn">
                 <i class="fas fa-home"></i>
@@ -928,7 +945,7 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.ready(); // Signal to Telegram that the Mini App is fully loaded & authentic
+        tg.ready(); // Fully signals WebApp authenticity
         
         let currentPage = 1;
         let currentView = 'home';
@@ -944,6 +961,7 @@
         let replaySecondsLeft = 10;
         
         const appContainer = document.getElementById('app-container');
+        const scrollViewport = document.getElementById('scroll-viewport');
         const homeBtn = document.getElementById('home-btn');
         const watchlistBtn = document.getElementById('watchlist-btn');
         const videoContainer = document.getElementById('video-container');
@@ -1141,6 +1159,7 @@
                     </ul>
                 </div>
             `;
+            scrollViewport.scrollTo(0, 0);
             document.getElementById('rules-close-btn').addEventListener('click', () => {
                 if (currentView === 'home') loadHomePage();
                 else loadWatchlist();
@@ -1216,6 +1235,7 @@
             }
             
             appContainer.innerHTML = html;
+            scrollViewport.scrollTo(0, 0);
         }
         
         function loadWatchlist() {
@@ -1266,12 +1286,12 @@
             }
             html += '</div>';
             appContainer.innerHTML = html;
+            scrollViewport.scrollTo(0, 0);
         }
         
         function changePage(newPage) {
             currentPage = newPage;
             loadHomePage();
-            window.scrollTo(0, 0);
         }
         
         function triggerWatchFlow(postId, adsRequired) {
@@ -1303,7 +1323,7 @@
                 
                 if (progress >= 100) {
                     clearInterval(adInterval);
-                    adCounter.style.display = 'none'; // Hide loader smoothly
+                    adCounter.style.display = 'none'; // Hide loader
                     
                     // Trigger Monetag Ads automatically at 100% progress
                     show_10518940().then(() => {
