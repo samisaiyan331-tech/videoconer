@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Broadcast Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff3366;
+            --bg-dark: #0f0f12;
+            --card-bg: #16161c;
+            --border: #252530;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .panel {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 0;
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-top: 18px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background-color: #1d1d26;
+            color: #fff;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #ff3366, #ff668f);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3);
+        }
+        .log-box {
+            margin-top: 25px;
+            background: #09090c;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            height: 120px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00ff66;
+        }
+        .status {
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <h2>Telegram Bot Broadcast Panel</h2>
+
+    <div class="form-group">
+        <label>১. ক্লাউডফ্লেয়ার ওয়ার্কার লিংক (Workers URL)</label>
+        <input type="text" id="worker-url" value="https://videocalaction.samisaiyan331.workers.dev">
+    </div>
+
+    <div class="form-group">
+        <label>২. এডমিন পাসওয়ার্ড (Code default)</label>
+        <input type="password" id="secret-key" value="my_secure_admin_password_123">
+    </div>
+
+    <hr style="border: 1px solid var(--border); margin: 25px 0;">
+
+    <div class="form-group">
+        <label>৩. মেসেজ ডেলিভারি টার্গেট</label>
+        <select id="target-select">
+            <option value="all">সকল ব্যবহারকারীর কাছে ব্রডকাস্ট করুন (All Members)</option>
+            <option value="single">শুধুমাত্র নির্দিষ্ট একজনকে (Single User)</option>
+        </select>
+    </div>
+
+    <div class="form-group" id="single-uid-group" style="display: none;">
+        <label>নির্দিষ্ট ব্যবহারকারী আইডি (Target Telegram UID)</label>
+        <input type="text" id="target-uid" placeholder="যেমন: 7959305431">
+    </div>
+
+    <div class="form-group">
+        <label>৪. শিরোনাম (Headline / Title)</label>
+        <input type="text" id="msg-heading" placeholder="যেমন: নতুন কন্টেন্ট আপডেট!">
+    </div>
+
+    <div class="form-group">
+        <label>৫. বার্তা বিবরণ (Message Text - Markdown Support)</label>
+        <textarea id="msg-body" placeholder="এখানে মূল মেসেজটি প্রবেশ করুন..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>৬. ব্যানার ছবি লিঙ্ক (Optional Photo URL)</label>
+        <input type="text" id="msg-photo" placeholder="https://domain.com/image.jpg">
+    </div>
+
+    <div class="form-group">
+        <label>৭. বোতাম টেক্সট (Optional Button Text)</label>
+        <input type="text" id="msg-btn-text" placeholder="যেমন: ভিডিও দেখতে ক্লিক করুন">
+    </div>
+
+    <div class="form-group">
+        <label>৮. বোতাম লিঙ্ক (Optional Button URL)</label>
+        <input type="text" id="msg-btn-url" placeholder="https://yourdomain.com">
+    </div>
+
+    <button class="btn" id="send-btn">ব্রডকাস্ট শুরু করুন</button>
+    <div id="status-text" class="status"></div>
+
+    <div class="log-box" id="logs">
+        > ব্রডকাস্ট প্যানেল প্রস্তুত।
+    </div>
+</div>
+
+<script>
+    const targetSelect = document.getElementById('target-select');
+    const singleUidGroup = document.getElementById('single-uid-group');
+    const sendBtn = document.getElementById('send-btn');
+    const logs = document.getElementById('logs');
+    const statusText = document.getElementById('status-text');
+
+    targetSelect.addEventListener('change', () => {
+        singleUidGroup.style.display = targetSelect.value === 'single' ? 'block' : 'none';
+    });
+
+    function addLog(text) {
+        const div = document.createElement('div');
+        div.textContent = `> ${text}`;
+        logs.appendChild(div);
+        logs.scrollTop = logs.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', async () => {
+        const workerUrl = document.getElementById('worker-url').value.trim();
+        const secret = document.getElementById('secret-key').value.trim();
+        const targetType = targetSelect.value;
+        const targetUid = document.getElementById('target-uid').value.trim();
+        const heading = document.getElementById('msg-heading').value.trim();
+        const text = document.getElementById('msg-body').value.trim();
+        const photoUrl = document.getElementById('msg-photo').value.trim();
+        const btnText = document.getElementById('msg-btn-text').value.trim();
+        const btnUrl = document.getElementById('msg-btn-url').value.trim();
+
+        if (!workerUrl || !secret || !heading || !text) {
+            alert('অনুগ্রহ করে ১, ২, ৪ এবং ৫ নম্বর ফিল্ডগুলো অবশ্যই পূরণ করুন।');
+            return;
+        }
+
+        statusText.textContent = 'প্রসেসিং...';
+        sendBtn.disabled = true;
+        sendBtn.style.opacity = '0.6';
+
+        let targets = [];
+
+        if (targetType === 'single') {
+            if (!targetUid) {
+                alert('অনুগ্রহ করে ব্যবহারকারী আইডি প্রদান করুন।');
+                sendBtn.disabled = false;
+                sendBtn.style.opacity = '1';
+                return;
+            }
+            targets.push(targetUid);
+            addLog(`নির্দিষ্ট আইডি সেট করা হয়েছে: ${targetUid}`);
+        } else {
+            addLog('ডাটাবেস থেকে ব্যবহারকারী তালিকা সংগ্রহ করা হচ্ছে...');
+            try {
+                const listRes = await fetch(`${workerUrl}/api/users?secret=${encodeURIComponent(secret)}`);
+                if (listRes.status === 401) {
+                    throw new Error('পাসওয়ার্ডটি ভুল প্রদান করা হয়েছে।');
+                }
+                const listData = await listRes.json();
+                if (listData.ok && listData.uids.length > 0) {
+                    targets = listData.uids;
+                    addLog(`ডাটাবেস থেকে ${targets.length} জন সক্রিয় ব্যবহারকারী পাওয়া গেছে।`);
+                } else {
+                    throw new Error('ডাটাবেসে কোনো ব্যবহারকারী খুঁজে পাওয়া যায়নি।');
+                }
+            } catch (e) {
+                addLog(`ভুল: ${e.message}`);
+                statusText.textContent = 'ব্যর্থ হয়েছে!';
+                sendBtn.disabled = false;
+                sendBtn.style.opacity = '1';
+                return;
+            }
+        }
+
+        addLog('টেলিগ্রাম এপিআই এর মাধ্যমে ব্রডকাস্ট পাঠানো হচ্ছে...');
+        try {
+            const sendRes = await fetch(`${workerUrl}/api/send`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    secret,
+                    targets,
+                    heading,
+                    text,
+                    photoUrl: photoUrl || null,
+                    btnText: btnText || null,
+                    btnUrl: btnUrl || null
+                })
+            });
+
+            const sendData = await sendRes.json();
+            if (sendData.ok) {
+                addLog(`ব্রডকাস্ট সম্পন্ন হয়েছে। সফল: ${sendData.successCount} জন | ব্যর্থ: ${sendData.failCount} জন`);
+                statusText.style.color = '#00e676';
+                statusText.textContent = `সফলভাবে সম্পন্ন হয়েছে! (${sendData.successCount})`;
+            } else {
+                throw new Error(sendData.error || 'ব্রডকাস্ট ডাটা রিজেক্ট হয়েছে।');
+            }
+        } catch (e) {
+            addLog(`ব্যর্থ হয়েছে: ${e.message}`);
+            statusText.style.color = '#ff3366';
+            statusText.textContent = 'বার্তা পাঠানো ব্যর্থ হয়েছে!';
+        }
+
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = '1';
+    });
+</script>
+
+</body>
+</html>
