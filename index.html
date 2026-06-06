@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pron Hub BD</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Monetag Telegram Mini App SDK -->
+    <script src='//libtl.com/sdk.js' data-zone='10518940' data-sdk='show_10518940'></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #090a0f;
+            --card-bg: #121420;
+            --primary: #ff2a5f;
+            --secondary: #ff7e40;
+            --text-main: #ffffff;
+            --text-muted: #8a8d9f;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --shadow-glow: 0 8px 24px rgba(255, 42, 95, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Premium Header */
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 5px 0;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        /* Fancy Notification Ticker */
+        .fancy-news-bar {
+            background: rgba(255, 42, 95, 0.1);
+            border: 1px solid rgba(255, 42, 95, 0.2);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .fancy-icon {
+            font-size: 18px;
+            margin-right: 10px;
+            color: #ffd000;
+            animation: pulse-bell 1.5s infinite;
+        }
+
+        .fancy-text {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fancy-ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollText 45s linear infinite;
+        }
+
+        .fancy-ticker span {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .highlight { color: #00ff88; font-weight: 700; }
+        .highlight2 { color: #00d9ff; font-weight: 700; }
+
+        @keyframes scrollText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes pulse-bell {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 2-Column Vertical Portrait Grid */
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        
+        .post-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .post-card:active {
+            transform: scale(0.97);
+        }
+        
+        .post-thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2 / 3; /* লম্বাটে পোর্ট্রেট থাম্বনেইল */
+            overflow: hidden;
+        }
+        
+        .post-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .post-card:hover .post-thumbnail {
+            transform: scale(1.05);
+        }
+
+        /* Play Button Card Overlay */
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0,0,0,0) 60%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .card-play-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--shadow-glow);
+        }
+        
+        /* Highlighted Pagination Buttons */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 15px;
+        }
+        
+        .page-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-btn:not(:disabled):hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .page-info {
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        
+        /* Custom Video Container */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .video-player {
+            width: 100%;
+            max-height: 100%;
+        }
+        
+        .player-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 10;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            transition: opacity 0.3s;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 3px;
+            width: 0%;
+        }
+        
+        .control-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .time-display {
+            color: white;
+            font-size: 12px;
+        }
+        
+        /* 10-Second Countdown End Overlay */
+        .video-end-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(9, 10, 15, 0.95);
+            z-index: 20;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .overlay-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px 20px;
+            width: 90%;
+            max-width: 340px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .overlay-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .overlay-timer {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .overlay-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .overlay-btn {
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-replay {
+            background: var(--gradient);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-close {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+        
+        /* Ad Screen Interface */
+        .ad-counter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #090a0f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            display: none;
+            padding: 20px;
+        }
+        
+        .ad-counter-text {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .ad-badge {
+            background: rgba(255, 42, 95, 0.2);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .ad-progress {
+            width: 80%;
+            max-width: 300px;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .ad-progress-bar {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+        }
+        
+        .ad-skip {
+            color: white;
+            background: var(--gradient);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            display: none;
+        }
+        
+        /* Fixed Navigation Bottom Bar */
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f111a;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 50;
+        }
+        
+        .nav-btn {
+            background: transparent;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.3s;
+            gap: 4px;
+        }
+        
+        .nav-btn i {
+            font-size: 20px;
+        }
+        
+        .nav-btn.active {
+            color: var(--primary);
+        }
+        
+        /* Watchlist UI */
+        .watchlist-container {
+            padding: 5px 0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        .watchlist-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 20px 0 10px;
+            padding-left: 10px;
+            border-left: 3px solid var(--primary);
+            font-weight: 600;
+        }
+        
+        .watchlist-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .watchlist-thumbnail {
+            width: 50px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .watchlist-info {
+            flex: 1;
+        }
+        
+        .watchlist-item-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+        
+        .watchlist-item-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        /* Rules UI */
+        .rules-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .rules-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .rules-list {
+            list-style-type: none;
+            margin-bottom: 25px;
+        }
+        
+        .rules-list li {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #d1d2d6;
+        }
+        
+        .rules-list li::before {
+            content: '✦';
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .rules-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .rules-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .important-note {
+            background: rgba(255, 42, 95, 0.15);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .empty-icon {
+            font-size: 50px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-text {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .hide-controls .player-header,
+        .hide-controls .player-controls {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app-container">
+        <!-- Content gets dynamic load here -->
+    </div>
+    
+    <!-- Video Player Layer -->
+    <div class="video-container" id="video-container">
+        <div class="player-header">
+            <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
+        </div>
+        <video class="video-player" id="video-player" playsinline></video>
+        
+        <!-- Controls -->
+        <div class="player-controls">
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="control-buttons">
+                <button class="control-btn" id="play-pause-btn"><i class="fas fa-pause"></i></button>
+                <div class="time-display" id="time-display">0:00 / 0:00</div>
+                <button class="control-btn" id="fullscreen-btn"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+
+        <!-- 10s Countdown Screen (End of Video) -->
+        <div class="video-end-overlay" id="video-end-overlay">
+            <div class="overlay-card">
+                <div class="overlay-title">Video Completed! / ভিডিওটি শেষ হয়েছে</div>
+                <div class="overlay-timer" id="overlay-timer">10</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Returning to homepage automatically / স্বয়ংক্রিয়ভাবে হোমপেজে ফিরে যাওয়া হবে</div>
+                <div class="overlay-buttons">
+                    <button class="overlay-btn btn-replay" id="overlay-replay-btn">
+                        <i class="fas fa-redo"></i> Replay Video / পুনরায় দেখুন
+                    </button>
+                    <button class="overlay-btn btn-close" id="overlay-close-btn">
+                        <i class="fas fa-home"></i> Back to Home / হোমপেজে ফিরুন
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ad Screen Overlay -->
+    <div class="ad-counter" id="ad-counter">
+        <div class="ad-counter-text">
+            Please watch ads to play video<br>ভিডিওটি দেখতে বিজ্ঞাপনটি লোড হতে দিন
+            <br>
+            <span class="ad-badge" id="ad-count-text">Ad 1 of 2</span>
+        </div>
+        <div class="ad-progress">
+            <div class="ad-progress-bar" id="ad-progress-bar"></div>
+        </div>
+        <button class="ad-skip" id="ad-skip-btn">Continue in <span id="skip-timer">5</span>s</button>
+    </div>
+    
+    <!-- Info/Rules Floating Trigger -->
+    <button class="rules-btn" id="rules-btn"><i class="fas fa-info"></i></button>
+    
+    <!-- Bottom Bar Navigation -->
+    <div class="navigation">
+        <button class="nav-btn active" id="home-btn">
+            <i class="fas fa-grid-2"></i>
+            <i class="fas fa-house"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-btn" id="watchlist-btn">
+            <i class="fas fa-history"></i>
+            <span>Watchlist</span>
+        </button>
+    </div>
+    
+    <script src="content.js"></script>
+
+    <script>
+        // Init Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        let currentPage = 1;
+        let currentView = 'home';
+        let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos')) || {};
+        
+        let adCount = 0;
+        let maxAdsNeeded = 2; // Default for new video is 2
+        const postsPerPage = 20;
+        let currentVideoId = null;
+        
+        let adInterval;
+        let secondsLeft = 5;
+        let controlsTimeout;
+        let isControlsVisible = true;
+        let endCountdownInterval = null;
+        
+        // Elements
+        const appContainer = document.getElementById('app-container');
+        const homeBtn = document.getElementById('home-btn');
+        const watchlistBtn = document.getElementById('watchlist-btn');
+        const videoContainer = document.getElementById('video-container');
+        const videoPlayer = document.getElementById('video-player');
+        const backBtn = document.getElementById('back-btn');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const timeDisplay = document.getElementById('time-display');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const adCounter = document.getElementById('ad-counter');
+        const adCountText = document.getElementById('ad-count-text');
+        const adProgressBar = document.getElementById('ad-progress-bar');
+        const adSkipBtn = document.getElementById('ad-skip-btn');
+        const skipTimerDisplay = document.getElementById('skip-timer');
+        const rulesBtn = document.getElementById('rules-btn');
+        const videoEndOverlay = document.getElementById('video-end-overlay');
+        const overlayTimer = document.getElementById('overlay-timer');
+        const overlayReplayBtn = document.getElementById('overlay-replay-btn');
+        const overlayCloseBtn = document.getElementById('overlay-close-btn');
+
+        initApp();
+        
+        function initApp() {
+            loadHomePage();
+            setupEventListeners();
+        }
+        
+        function setupEventListeners() {
+            homeBtn.addEventListener('click', () => {
+                currentView = 'home';
+                homeBtn.classList.add('active');
+                watchlistBtn.classList.remove('active');
+                loadHomePage();
+            });
+            
+            watchlistBtn.addEventListener('click', () => {
+                currentView = 'watchlist';
+                watchlistBtn.classList.add('active');
+                homeBtn.classList.remove('active');
+                loadWatchlist();
+            });
+            
+            backBtn.addEventListener('click', closePlayer);
+            
+            playPauseBtn.addEventListener('click', () => {
+                if (videoPlayer.paused) {
+                    videoPlayer.play();
+                } else {
+                    videoPlayer.pause();
+                }
+                resetControlsTimeout();
+            });
+            
+            progressContainer.addEventListener('click', (e) => {
+                const rect = progressContainer.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                videoPlayer.currentTime = pos * videoPlayer.duration;
+                resetControlsTimeout();
+            });
+            
+            fullscreenBtn.addEventListener('click', () => {
+                if (videoContainer.requestFullscreen) {
+                    videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    videoContainer.webkitRequestFullscreen();
+                }
+                resetControlsTimeout();
+            });
+            
+            videoPlayer.addEventListener('play', () => {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            });
+            
+            videoPlayer.addEventListener('pause', () => {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            });
+            
+            videoPlayer.addEventListener('timeupdate', () => {
+                if(videoPlayer.duration) {
+                    const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                    progressBar.style.width = `${percent}%`;
+                    timeDisplay.textContent = `${formatTime(videoPlayer.currentTime)} / ${formatTime(videoPlayer.duration)}`;
+                }
+            });
+            
+            videoPlayer.addEventListener('ended', showEndOverlay);
+            
+            videoContainer.addEventListener('mousemove', resetControlsTimeout);
+            videoContainer.addEventListener('touchstart', resetControlsTimeout);
+            
+            rulesBtn.addEventListener('click', showRules);
+
+            overlayReplayBtn.addEventListener('click', replayVideoDirectly);
+            overlayCloseBtn.addEventListener('click', closePlayer);
+            
+            adSkipBtn.addEventListener('click', () => {
+                if (secondsLeft <= 0) {
+                    clearInterval(adInterval);
+                    adCounter.style.display = 'none';
+                    
+                    // Trigger Monetag SDK Ad function
+                    show_10518940().then(() => {
+                        handleAdFlowSuccess();
+                    }).catch(() => {
+                        // fallback execution if ad loading error
+                        handleAdFlowSuccess();
+                    });
+                }
+            });
+        }
+
+        function closePlayer() {
+            clearInterval(endCountdownInterval);
+            videoEndOverlay.style.display = 'none';
+            videoContainer.style.display = 'none';
+            videoPlayer.pause();
+            if (currentView === 'home') {
+                loadHomePage();
+            } else {
+                loadWatchlist();
+            }
+        }
+
+        function showEndOverlay() {
+            videoEndOverlay.style.display = 'flex';
+            let countdown = 10;
+            overlayTimer.textContent = countdown;
+            
+            clearInterval(endCountdownInterval);
+            endCountdownInterval = setInterval(() => {
+                countdown--;
+                overlayTimer.textContent = countdown;
+                if(countdown <= 0) {
+                    clearInterval(endCountdownInterval);
+                    closePlayer();
+                }
+            }, 1000);
+        }
+
+        function replayVideoDirectly() {
+            clearInterval(endCountdownInterval);
+            videoEndOverlay.style.display = 'none';
+            videoPlayer.currentTime = 0;
+            videoPlayer.play().catch(err => console.log(err));
+        }
+        
+        function showControls() {
+            videoContainer.classList.remove('hide-controls');
+            isControlsVisible = true;
+        }
+        
+        function hideControls() {
+            videoContainer.classList.add('hide-controls');
+            isControlsVisible = false;
+        }
+        
+        function resetControlsTimeout() {
+            clearTimeout(controlsTimeout);
+            showControls();
+            controlsTimeout = setTimeout(hideControls, 4000);
+        }
+        
+        function showRules() {
+            appContainer.innerHTML = `
+                <div class="rules-container">
+                    <button class="rules-close" id="rules-close-btn"><i class="fas fa-times"></i></button>
+                    
+                    <div class="important-note">
+                        <strong>⚠️ Notice / সতর্কতা:</strong><br>
+                        বিজ্ঞাপন সম্পূর্ণ না দেখলে বা স্কিপ করলে ভিডিও প্লে হবে না। বিজ্ঞাপন চলাকালীন ৫ সেকেন্ড অপেক্ষা করে অবশ্যই Continue বাটনে চাপ দিতে হবে।
+                    </div>
+
+                    <div class="language-section">
+                        <h2 class="rules-title">নিয়মাবলী (Bangla)</h2>
+                        <ul class="rules-list">
+                            <li>নতুন কোনো ভিডিও প্লে করতে আপনাকে অবশ্যই ২টি বিজ্ঞাপন সম্পূর্ণ দেখতে হবে।</li>
+                            <li>ইতিপূর্বে একবার দেখা ভিডিও পুনরায় ওয়াচলিস্ট থেকে দেখতে চাইলে ১টি বিজ্ঞাপন দেখতে হবে।</li>
+                            <li>বিজ্ঞাপন দেখার সময় কাউন্টডাউন শেষ হওয়া পর্যন্ত অপেক্ষা করুন এবং Continue বাটনে চাপ দিন।</li>
+                            <li>ভিডিও দেখা শেষ হলে পেজে ১০ সেকেন্ডের টাইমার চালু হবে। আপনি চাইলে Replay বাটনে চেপে পুনরায় দেখতে পারবেন অথবা হোমে চলে যেতে পারেন।</li>
+                        </ul>
+                    </div>
+
+                    <div class="language-section" style="margin-top: 20px;">
+                        <h2 class="rules-title">Rules (English)</h2>
+                        <ul class="rules-list">
+                            <li>To watch a new video, you must view 2 advertisements fully.</li>
+                            <li>To watch an already viewed video from the Watchlist, only 1 ad is required.</li>
+                            <li>Wait for the countdown to complete on the ad screen and then tap "Continue".</li>
+                            <li>After the video ends, a 10-second prompt overlay will load to either replay or return home.</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('rules-close-btn').addEventListener('click', () => {
+                if (currentView === 'home') {
+                    loadHomePage();
+                } else {
+                    loadWatchlist();
+                }
+            });
+        }
+        
+        function loadHomePage() {
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const availablePosts = posts.filter(post => !watchedVideos[post.id]);
+            const totalPages = Math.ceil(availablePosts.length / postsPerPage) || 1;
+            
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+            
+            const pagePosts = availablePosts.slice(startIndex, startIndex + postsPerPage);
+            
+            let html = `
+                <div class="header">
+                    <div class="header-top">
+                        <div class="logo">Pron Hub BD</div>
+                    </div>
+                    
+                    <div class="fancy-news-bar">
+                        <div class="fancy-icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="fancy-text">
+                            <div class="fancy-ticker">
+                                <span>
+                                    👋 <span class="highlight">নিয়মাবলী:</span> ভিডিও দেখতে ২ টি অ্যাড সম্পন্ন করুন। একবার দেখা ভিডিও ওয়াচলিস্ট থেকে দেখতে ১টি অ্যাড প্রয়োজন। 
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    👋 <span class="highlight2">Notice:</span> Watch 2 ads to load new content. Watchlist re-runs require only 1 ad. Follow simple rules to view videos instantly!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (pagePosts.length === 0) {
+                html += `
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="far fa-folder-open"></i></div>
+                        <div class="empty-text">No more new videos. Check Watchlist!<br>কোনো নতুন ভিডিও অবশিষ্ট নেই।</div>
+                    </div>
+                `;
+            } else {
+                html += '<div class="post-grid">';
+                
+                pagePosts.forEach(post => {
+                    html += `
+                        <div class="post-card" onclick="startAdSequence('${post.id}', 2)">
+                            <div class="post-thumbnail-wrapper">
+                                <img src="${post.thumbnail}" class="post-thumbnail" alt="Content">
+                                <div class="card-overlay">
+                                    <button class="card-play-btn">
+                                        <i class="fas fa-play"></i> Watch Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                
+                html += `
+                    <div class="pagination">
+                        <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="page-info">Page ${currentPage} of ${totalPages}</span>
+                        <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            appContainer.innerHTML = html;
+        }
+        
+        function loadWatchlist() {
+            let html = `
+                <div class="watchlist-container">
+                    <div class="section-title">
+                        <i class="fas fa-history"></i>
+                        Your Watch History / ওয়াচ হিস্ট্রি
+                    </div>
+            `;
+            
+            const watchedKeys = Object.keys(watchedVideos);
+            if (watchedKeys.length === 0) {
+                html += `
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="far fa-clock"></i></div>
+                        <div class="empty-text">You haven't watched any videos yet.<br>হিস্ট্রি খালি রয়েছে।</div>
+                    </div>
+                `;
+            } else {
+                const groupedByDate = {};
+                watchedKeys.forEach(id => {
+                    const post = posts.find(p => p.id === id);
+                    if (post) {
+                        const date = new Date(watchedVideos[id]).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        
+                        if (!groupedByDate[date]) {
+                            groupedByDate[date] = [];
+                        }
+                        
+                        groupedByDate[date].push({
+                            post: post,
+                            watchedAt: watchedVideos[id]
+                        });
+                    }
+                });
+                
+                const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
+                
+                sortedDates.forEach(date => {
+                    html += `<div class="watchlist-date">${date}</div>`;
+                    
+                    groupedByDate[date].sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt)).forEach(item => {
+                        const post = item.post;
+                        const watchedTime = new Date(item.watchedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        html += `
+                            <div class="watchlist-item" onclick="startAdSequence('${post.id}', 1)">
+                                <img src="${post.thumbnail}" class="watchlist-thumbnail" alt="thumb">
+                                <div class="watchlist-info">
+                                    <div class="watchlist-item-title">Video ID: #${post.id}</div>
+                                    <div class="watchlist-item-time">Watched at ${watchedTime}</div>
+                                </div>
+                                <i class="fas fa-play" style="color: var(--primary); font-size: 16px; margin-right: 10px;"></i>
+                            </div>
+                        `;
+                    });
+                });
+            }
+            
+            html += '</div>';
+            appContainer.innerHTML = html;
+        }
+        
+        function changePage(newPage) {
+            currentPage = newPage;
+            loadHomePage();
+            window.scrollTo(0, 0);
+        }
+        
+        function startAdSequence(postId, adsRequired) {
+            currentVideoId = postId;
+            adCount = 1;
+            maxAdsNeeded = adsRequired;
+            showAdScreen();
+        }
+        
+        function showAdScreen() {
+            secondsLeft = 5;
+            skipTimerDisplay.textContent = secondsLeft;
+            adSkipBtn.style.display = 'none';
+            
+            adCounter.style.display = 'flex';
+            adCountText.textContent = `Ad ${adCount} of ${maxAdsNeeded}`;
+            adProgressBar.style.width = '0%';
+            
+            let progress = 0;
+            const totalSteps = 100;
+            const stepDuration = 50; // Total 5 seconds animation duration
+            
+            adInterval = setInterval(() => {
+                progress += 1;
+                adProgressBar.style.width = `${progress}%`;
+                
+                // Show Skip Button after 5 seconds
+                if (progress >= totalSteps) {
+                    clearInterval(adInterval);
+                    adSkipBtn.style.display = 'block';
+                    secondsLeft = 0;
+                    skipTimerDisplay.textContent = secondsLeft;
+                } else if (progress % 20 === 0) {
+                    secondsLeft--;
+                    if (secondsLeft < 0) secondsLeft = 0;
+                    skipTimerDisplay.textContent = secondsLeft;
+                }
+            }, stepDuration);
+        }
+        
+        function handleAdFlowSuccess() {
+            if (adCount < maxAdsNeeded) {
+                adCount++;
+                showAdScreen();
+            } else {
+                adCount = 0;
+                playVideo(currentVideoId);
+            }
+        }
+        
+        function playVideo(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            // Register as watched
+            watchedVideos[postId] = new Date().toISOString();
+            localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+            
+            videoContainer.style.display = 'flex';
+            videoPlayer.src = post.videoLink;
+            videoPlayer.load();
+            
+            showControls();
+            resetControlsTimeout();
+            
+            setTimeout(() => {
+                videoPlayer.play().catch(e => {
+                    console.log('Playback error:', e);
+                });
+            }, 300);
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+    </script>
+</body>
+</html>

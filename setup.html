@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Setup Panel | Pron Hub BD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #090a0f;
+            --card-bg: #121420;
+            --primary: #ff2a5f;
+            --secondary: #ff7e40;
+            --text-main: #ffffff;
+            --text-muted: #8a8d9f;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .setup-card { background: var(--card-bg); border-radius: 24px; padding: 35px; width: 100%; max-width: 500px; border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .logo-area { text-align: center; margin-bottom: 25px; }
+        .logo-title { font-size: 24px; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 13px; color: var(--text-muted); margin-top: 5px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--text-main); }
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; }
+        .form-control { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 14px 15px 14px 45px; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: all 0.3s ease; }
+        .form-control:focus { border-color: var(--primary); background: rgba(255, 255, 255, 0.06); }
+        .submit-btn { width: 100%; background: var(--gradient); border: none; padding: 15px; border-radius: 12px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s, opacity 0.2s; box-shadow: 0 8px 24px rgba(255, 42, 95, 0.2); }
+        .submit-btn:active { transform: scale(0.98); }
+        .status-box { margin-top: 20px; padding: 15px; border-radius: 12px; font-size: 13px; display: none; line-height: 1.5; }
+        .status-success { background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .status-error { background: rgba(255, 42, 95, 0.1); border: 1px solid rgba(255, 42, 95, 0.2); color: #ff2a5f; }
+    </style>
+</head>
+<body>
+    <div class="setup-card">
+        <div class="logo-area">
+            <div class="logo-title">System Setup / ইনিশিয়াল সেটআপ</div>
+            <div class="subtitle">Configure Telegram Bot, Webhook & App Variables</div>
+        </div>
+        <form id="setupForm">
+            <div class="form-group">
+                <label>Telegram Bot Token</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-key"></i>
+                    <input type="text" id="botToken" class="form-control" placeholder="Enter Bot Token" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Admin Telegram User ID (UID)</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user-shield"></i>
+                    <input type="number" id="adminId" class="form-control" placeholder="e.g. 7959305431" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Admin Access Secret PIN</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="secretPin" class="form-control" placeholder="Set a Secret PIN" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cloudflare Worker URL / Webhook URL</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-link"></i>
+                    <input type="url" id="workerUrl" class="form-control" placeholder="https://your-subdomain.workers.dev" required>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="saveBtn">
+                <i class="fas fa-save"></i> Save Config & Connect Bot
+            </button>
+        </form>
+        <div class="status-box" id="statusBox"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('setupForm');
+        const statusBox = document.getElementById('statusBox');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // Fetch existing configuration to prepopulate (except sensitive items)
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/config');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.exists) {
+                        document.getElementById('adminId').value = data.adminId || '';
+                        document.getElementById('workerUrl').value = data.workerUrl || '';
+                    }
+                }
+            } catch (err) {}
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving & Configuring...';
+            statusBox.style.display = 'none';
+
+            const payload = {
+                botToken: document.getElementById('botToken').value.trim(),
+                adminId: document.getElementById('adminId').value.trim(),
+                secretPin: document.getElementById('secretPin').value.trim(),
+                workerUrl: document.getElementById('workerUrl').value.trim()
+            };
+
+            try {
+                const response = await fetch('/api/setup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                statusBox.style.display = 'block';
+                if (response.ok && data.success) {
+                    statusBox.className = 'status-box status-success';
+                    statusBox.innerHTML = `<strong>Setup Success! / সেটআপ সম্পন্ন!</strong><br>Bot configured and webhook linked successfully.<br><small>${data.webhook_description || ''}</small>`;
+                } else {
+                    statusBox.className = 'status-box status-error';
+                    statusBox.innerHTML = `<strong>Error / ব্যর্থ হয়েছে:</strong> ${data.error || 'Unknown setup error.'}`;
+                }
+            } catch (err) {
+                statusBox.style.display = 'block';
+                statusBox.className = 'status-box status-error';
+                statusBox.innerHTML = `<strong>Request Failed:</strong> ${err.message}`;
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Config & Connect Bot';
+            }
+        });
+    </script>
+</body>
+</html>
