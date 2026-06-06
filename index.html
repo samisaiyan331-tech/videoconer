@@ -2,22 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pron Hub BD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Video Conear</title>
+    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Monetag Telegram Mini App SDK -->
     <script src='//libtl.com/sdk.js' data-zone='10518940' data-sdk='show_10518940'></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #FF3366;
-            --secondary: #FF668F;
-            --dark-bg: #09090C;
-            --card-bg: #15151E;
-            --text-light: #F3F4F6;
+            --secondary: #8A2BE2;
+            --dark-bg: #07070A;
+            --card-bg: #111119;
+            --card-border: rgba(255, 51, 102, 0.15);
+            --text-light: #F9FAFB;
             --text-muted: #9CA3AF;
-            --shadow: 0 8px 24px rgba(255, 51, 102, 0.2);
+            --shadow: 0 8px 32px rgba(255, 51, 102, 0.25);
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass: rgba(17, 17, 25, 0.85);
         }
         
         * {
@@ -28,24 +32,39 @@
             -webkit-tap-highlight-color: transparent;
         }
         
+        /* Centered Mobile Layout for Big Screens */
         body {
-            background-color: var(--dark-bg);
+            background-color: #030305;
             color: var(--text-light);
             min-height: 100vh;
-            padding-bottom: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
             overflow-x: hidden;
+        }
+
+        .phone-wrapper {
+            width: 100%;
+            max-width: 480px; /* Fixed maximum width */
+            min-height: 100vh;
+            background-color: var(--dark-bg);
+            position: relative;
+            padding-bottom: 90px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.03);
+            border-right: 1px solid rgba(255, 255, 255, 0.03);
         }
         
         .container {
-            padding: 15px;
-            max-width: 100%;
+            padding: 16px;
+            width: 100%;
         }
         
         .header {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .header-top {
@@ -55,30 +74,78 @@
         }
         
         .logo {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 51, 102, 0.2);
+        }
+
+        /* Telegram Profile Design */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px 10px 4px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .profile-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            max-width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 32px;
+            height: 32px;
+        }
+
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--primary);
+        }
+
+        .online-dot {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            width: 8px;
+            height: 8px;
+            background-color: #00E676;
+            border-radius: 50%;
+            border: 1.5px solid var(--dark-bg);
         }
 
         /* Ticker Notification Style */
         .fancy-news-bar {
             display: flex;
             align-items: center;
-            background: rgba(255, 51, 102, 0.1);
-            border: 1px solid rgba(255, 51, 102, 0.25);
-            border-radius: 12px;
-            padding: 8px 12px;
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid rgba(138, 43, 226, 0.25);
+            border-radius: 14px;
+            padding: 10px 14px;
             overflow: hidden;
+            backdrop-filter: blur(5px);
         }
 
         .fancy-icon {
             font-size: 18px;
-            margin-right: 10px;
-            color: #fdd835;
+            margin-right: 12px;
+            color: #FFD700;
             animation: bounce 2s infinite alternate;
         }
 
@@ -92,13 +159,14 @@
             display: inline-block;
             white-space: nowrap;
             padding-left: 100%;
-            animation: scrollText 35s linear infinite;
+            animation: scrollText 30s linear infinite;
             font-size: 13px;
             font-weight: 500;
+            color: #E5E7EB;
         }
 
-        .highlight { color: #00e676; }
-        .highlight2 { color: #29b6f6; }
+        .highlight { color: #00E676; font-weight: 600; }
+        .highlight2 { color: #29B6F6; font-weight: 600; }
 
         @keyframes scrollText {
             0% { transform: translateX(0%); }
@@ -107,55 +175,62 @@
 
         @keyframes bounce {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-3px); }
+            100% { transform: translateY(-4px); }
         }
         
         /* 2 Column Tall/Portrait Layout */
         .post-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 16px;
         }
         
         .post-card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--card-border);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
         .post-card:active {
-            transform: scale(0.97);
+            transform: scale(0.96);
         }
         
         .thumbnail-container {
             position: relative;
             width: 100%;
-            /* 3:4 portrait ratio aspect-ratio */
             aspect-ratio: 3 / 4.2;
             overflow: hidden;
-            background: #1e1e24;
+            background: #14141F;
         }
         
         .post-thumbnail {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
+        }
+
+        .post-card:hover .post-thumbnail {
+            transform: scale(1.05);
         }
         
         .watch-overlay {
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
-            padding: 12px;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(7,7,10,0.9) 20%, rgba(7,7,10,0.2) 70%, transparent);
+            padding: 14px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
         }
         
         .watch-btn {
@@ -163,16 +238,21 @@
             color: white;
             border: none;
             width: 100%;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 11px;
+            border-radius: 12px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .watch-btn:active {
+            transform: scale(0.95);
         }
         
         /* Highlighted Pagination Controls */
@@ -180,16 +260,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 30px 0 10px;
-            gap: 15px;
+            margin: 32px 0 16px;
+            gap: 16px;
         }
         
         .page-btn {
             background: var(--gradient);
             border: none;
             color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 12px 24px;
+            border-radius: 14px;
             font-weight: 600;
             cursor: pointer;
             box-shadow: var(--shadow);
@@ -197,28 +277,34 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: opacity 0.2s;
+            transition: opacity 0.3s, transform 0.2s;
+            font-size: 14px;
+        }
+
+        .page-btn:active:not(:disabled) {
+            transform: scale(0.95);
         }
         
         .page-btn:disabled {
-            opacity: 0.3;
+            opacity: 0.25;
             cursor: not-allowed;
             box-shadow: none;
         }
         
         .page-info {
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-light);
             background: var(--card-bg);
-            padding: 10px 18px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
         }
         
         /* Custom Video Container and Player */
         .video-container {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
@@ -240,26 +326,31 @@
             top: 0;
             left: 0;
             right: 0;
-            padding: 15px;
+            padding: 16px;
             display: flex;
             align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent);
             z-index: 10;
         }
         
         .back-btn {
-            background: rgba(255,255,255,0.15);
-            border: none;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.1);
             width: 44px;
             height: 44px;
             border-radius: 50%;
             color: white;
             font-size: 16px;
             cursor: pointer;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .back-btn:active {
+            background: rgba(255,255,255,0.25);
         }
 
         .player-controls {
@@ -267,8 +358,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 20px 15px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 24px 16px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
             display: flex;
             flex-direction: column;
             z-index: 10;
@@ -278,9 +369,9 @@
         .progress-container {
             width: 100%;
             height: 6px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 5px;
-            margin-bottom: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin-bottom: 16px;
             cursor: pointer;
             position: relative;
         }
@@ -288,8 +379,9 @@
         .progress-bar {
             height: 100%;
             background: var(--primary);
-            border-radius: 5px;
+            border-radius: 10px;
             width: 0%;
+            box-shadow: 0 0 8px var(--primary);
         }
         
         .control-buttons {
@@ -314,6 +406,8 @@
         .time-display {
             color: white;
             font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
         
         /* 10-Second CountDown Overlay */
@@ -323,37 +417,43 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.9);
+            background: rgba(7, 7, 10, 0.95);
             z-index: 15;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px;
+            padding: 24px;
         }
 
         .replay-box {
             background: var(--card-bg);
             border: 2px solid var(--primary);
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 24px;
+            padding: 28px;
             max-width: 90%;
             width: 320px;
             box-shadow: var(--shadow);
+            animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleUp {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .countdown-circle {
             position: relative;
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             border: 3px dashed var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 24px;
+            margin: 0 auto 20px;
+            font-size: 26px;
             font-weight: 700;
             color: var(--primary);
             animation: spin 10s linear;
@@ -365,65 +465,79 @@
 
         .countdown-num {
             position: absolute;
-            transform: rotate(-360deg); /* Counter spin so number stays upright */
-            font-size: 22px;
+            transform: rotate(-360deg);
+            font-size: 24px;
             font-weight: 700;
         }
 
         .replay-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-light);
         }
 
         .replay-subtitle {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 20px;
-            line-height: 1.5;
+            margin-bottom: 24px;
+            line-height: 1.6;
         }
 
         .replay-btn {
             background: var(--gradient);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 14px 24px;
+            border-radius: 14px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .replay-btn:active {
+            transform: scale(0.97);
         }
 
         .replay-close-btn {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: var(--text-light);
-            padding: 10px 24px;
-            border-radius: 12px;
-            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 12px;
+            transition: background 0.2s;
+        }
+
+        .replay-close-btn:active {
+            background: rgba(255, 255, 255, 0.05);
         }
         
         /* Bottom Navigation Bar */
         .navigation {
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--card-bg);
+            background: var(--glass);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            padding: 14px 0;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
             z-index: 50;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(15px);
         }
         
         .nav-btn {
@@ -435,114 +549,123 @@
             color: var(--text-muted);
             cursor: pointer;
             font-size: 11px;
-            font-weight: 500;
+            font-weight: 600;
             transition: color 0.3s, transform 0.3s;
+            gap: 4px;
         }
         
         .nav-btn i {
             font-size: 20px;
-            margin-bottom: 4px;
+            transition: transform 0.3s ease;
         }
         
         .nav-btn.active {
             color: var(--primary);
+        }
+
+        .nav-btn.active i {
             transform: translateY(-2px);
+            color: var(--primary);
         }
         
         /* Ad Loader Layout */
         .ad-counter {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(9, 9, 12, 0.95);
+            background: rgba(7, 7, 10, 0.98);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 200;
             display: none;
-            padding: 20px;
+            padding: 24px;
         }
         
         .ad-counter-text {
             color: white;
             font-size: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
             text-align: center;
-            font-weight: 600;
-            line-height: 1.4;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .ad-counter-subtext {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-weight: 500;
         }
         
         .ad-progress {
-            width: 80%;
-            max-width: 300px;
+            width: 85%;
+            max-width: 320px;
             height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 5px;
-            margin-bottom: 25px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            margin-bottom: 28px;
             overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
         }
         
         .ad-progress-bar {
             height: 100%;
             background: var(--gradient);
             width: 0%;
-        }
-        
-        .ad-skip {
-            color: white;
-            background: var(--gradient);
-            border: none;
-            padding: 12px 35px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            display: none;
-            box-shadow: var(--shadow);
+            box-shadow: 0 0 10px var(--primary);
         }
         
         /* Watchlist styles */
         .watchlist-container {
-            padding: 10px;
+            padding: 8px;
         }
         
         .section-title {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--primary);
         }
         
         .watchlist-date {
             font-size: 13px;
             color: var(--text-muted);
-            margin: 20px 0 10px;
-            padding-left: 10px;
+            margin: 24px 0 12px;
+            padding-left: 12px;
             border-left: 3px solid var(--primary);
             font-weight: 600;
         }
         
         .watchlist-item {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .watchlist-item:active {
+            transform: scale(0.98);
         }
         
         .watchlist-thumbnail {
-            width: 50px;
-            height: 65px;
-            border-radius: 8px;
+            width: 54px;
+            height: 72px;
+            border-radius: 10px;
             object-fit: cover;
-            margin-right: 15px;
+            margin-right: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
         }
         
         .watchlist-info {
@@ -550,40 +673,44 @@
         }
         
         .watchlist-item-title {
-            font-size: 13px;
-            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
             margin-bottom: 4px;
         }
         
         .watchlist-item-time {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
         }
 
         /* Rules styles */
         .rules-container {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid rgba(255, 51, 102, 0.2);
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid var(--primary);
             position: relative;
+            box-shadow: var(--shadow);
+            animation: scaleUp 0.3s ease-out;
         }
         
         .rules-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             color: var(--primary);
+            letter-spacing: 0.5px;
         }
         
         .rules-list {
             list-style: none;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         
         .rules-list li {
-            margin-bottom: 12px;
-            padding-left: 20px;
+            margin-bottom: 14px;
+            padding-left: 22px;
             position: relative;
             font-size: 13px;
             line-height: 1.6;
@@ -591,33 +718,34 @@
         }
         
         .rules-list li::before {
-            content: '•';
+            content: '✦';
             color: var(--primary);
-            font-size: 20px;
+            font-size: 14px;
             position: absolute;
             left: 0;
-            top: -2px;
+            top: 0;
         }
 
         .important-note {
-            background: rgba(255, 51, 102, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            background: rgba(255, 51, 102, 0.08);
+            padding: 16px;
+            border-radius: 14px;
+            margin-bottom: 24px;
             border-left: 4px solid var(--primary);
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.6;
+            color: #FF80A0;
         }
         
         .rules-btn {
-            position: fixed;
-            bottom: 90px;
-            right: 15px;
+            position: absolute;
+            bottom: 104px;
+            right: 16px;
             background: var(--gradient);
             color: white;
             border: none;
-            width: 46px;
-            height: 46px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             font-size: 18px;
             cursor: pointer;
@@ -626,67 +754,96 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .rules-btn:active {
+            transform: scale(0.9);
         }
         
         .rules-close {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             background: transparent;
             border: none;
             color: var(--primary);
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
         }
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 24px;
         }
         
         .empty-icon {
-            font-size: 50px;
-            color: rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
+            font-size: 56px;
+            color: rgba(255, 51, 102, 0.15);
+            margin-bottom: 18px;
         }
         
         .empty-text {
             color: var(--text-muted);
             font-size: 14px;
+            line-height: 1.6;
         }
 
         /* Welcome page */
         .welcome-container {
-            padding: 25px 20px;
+            padding: 40px 24px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+
+        .welcome-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: pulse-icon 2s infinite alternate;
+        }
+
+        @keyframes pulse-icon {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); filter: drop-shadow(0 0 15px rgba(255,51,102,0.4)); }
         }
 
         .welcome-title {
-            font-size: 24px;
-            margin: 15px 0;
+            font-size: 26px;
+            margin-bottom: 16px;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .welcome-desc {
             color: var(--text-muted);
             font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 30px;
+            line-height: 1.7;
+            margin-bottom: 36px;
+            max-width: 280px;
         }
 
         .welcome-btn {
             background: var(--gradient);
             color: white;
             border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 16px;
+            padding: 16px 48px;
+            border-radius: 35px;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
             box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .welcome-btn:active {
+            transform: scale(0.96);
         }
         
         .video-container.hide-controls .player-header,
@@ -694,80 +851,89 @@
             opacity: 0;
             pointer-events: none;
         }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 51, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0); }
+        }
     </style>
 </head>
 <body>
-    <div class="container" id="app-container"></div>
-    
-    <!-- Video Player Screen -->
-    <div class="video-container" id="video-container">
-        <div class="player-header">
-            <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
-        </div>
-        <video class="video-player" id="video-player" playsinline></video>
+    <!-- Center Screen Wrapper -->
+    <div class="phone-wrapper">
+        <div class="container" id="app-container"></div>
         
-        <!-- Replay Overlay with 10s Countdown -->
-        <div class="replay-overlay" id="replay-overlay">
-            <div class="replay-box">
-                <div class="countdown-circle">
-                    <span class="countdown-num" id="countdown-num">10</span>
-                </div>
-                <div class="replay-title">পুনরায় দেখতে চান? / Replay Video?</div>
-                <div class="replay-subtitle">
-                    ১০ সেকেন্ডের মধ্যে নিচের বাটনে ক্লিক করে ১টি শর্ট বিজ্ঞাপন দেখে ভিডিওটি আবার দেখতে পারবেন।
-                </div>
-                <button class="replay-btn" id="replay-action-btn">
-                    <i class="fas fa-redo"></i> ১টি বিজ্ঞাপনে পুনরায় প্লে করুন
-                </button>
-                <button class="replay-close-btn" id="replay-close-btn">হোমপেজে ফিরে যান</button>
+        <!-- Video Player Screen -->
+        <div class="video-container" id="video-container">
+            <div class="player-header">
+                <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
             </div>
-        </div>
+            <video class="video-player" id="video-player" playsinline></video>
+            
+            <!-- Replay Overlay with 10s Countdown -->
+            <div class="replay-overlay" id="replay-overlay">
+                <div class="replay-box">
+                    <div class="countdown-circle">
+                        <span class="countdown-num" id="countdown-num">10</span>
+                    </div>
+                    <div class="replay-title">Replay Video?</div>
+                    <div class="replay-subtitle">
+                        Replay this video instantly within 10 seconds by watching just 1 short ad.
+                    </div>
+                    <button class="replay-btn" id="replay-action-btn">
+                        <i class="fas fa-redo"></i> Replay with 1 Ad
+                    </button>
+                    <button class="replay-close-btn" id="replay-close-btn">Back to Homepage</button>
+                </div>
+            </div>
 
-        <div class="player-controls">
-            <div class="progress-container" id="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <div class="control-buttons">
-                <button class="control-btn" id="play-pause-btn"><i class="fas fa-pause"></i></button>
-                <div class="time-display" id="time-display">0:00 / 0:00</div>
-                <button class="control-btn" id="fullscreen-btn"><i class="fas fa-expand"></i></button>
+            <div class="player-controls">
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="control-buttons">
+                    <button class="control-btn" id="play-pause-btn"><i class="fas fa-pause"></i></button>
+                    <div class="time-display" id="time-display">0:00 / 0:00</div>
+                    <button class="control-btn" id="fullscreen-btn"><i class="fas fa-expand"></i></button>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Fake Ad Interval Screen -->
-    <div class="ad-counter" id="ad-counter">
-        <div class="ad-counter-text">বিজ্ঞাপন লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন<br><span id="ad-count-text" style="color: var(--primary); font-size: 16px;">বিজ্ঞাপন ১ অফ ২</span></div>
-        <div class="ad-progress">
-            <div class="ad-progress-bar" id="ad-progress-bar"></div>
+        
+        <!-- Fake Ad Interval Screen -->
+        <div class="ad-counter" id="ad-counter">
+            <div class="ad-counter-text" id="ad-status-header">Preparing secure ad streams...</div>
+            <div class="ad-progress">
+                <div class="ad-progress-bar" id="ad-progress-bar"></div>
+            </div>
+            <div class="ad-counter-subtext" id="ad-status-subtext">Verification step in progress. Please do not close.</div>
         </div>
-        <button class="ad-skip" id="ad-skip-btn">কন্টিনিউ করুন (<span id="skip-timer">5</span>s)</button>
-    </div>
-    
-    <button class="rules-btn" id="rules-btn"><i class="fas fa-info"></i></button>
-    
-    <!-- Navigation -->
-    <div class="navigation">
-        <button class="nav-btn active" id="home-btn">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </button>
-        <button class="nav-btn" id="watchlist-btn">
-            <i class="fas fa-history"></i>
-            <span>Watchlist</span>
-        </button>
+        
+        <button class="rules-btn" id="rules-btn"><i class="fas fa-info"></i></button>
+        
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn active" id="home-btn">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-btn" id="watchlist-btn">
+                <i class="fas fa-history"></i>
+                <span>Watchlist</span>
+            </button>
+        </div>
     </div>
     
     <script src="content.js"></script>
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.enableClosingConfirmation();
+        tg.ready(); // Signal to Telegram that the Mini App is fully loaded & authentic
         
         let currentPage = 1;
         let currentView = 'home';
         let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos')) || {};
-        let totalAdsCount = 0; 
+        let totalAdsCount = 1; 
         let requiredAds = 2; // Default 2 ads for first watch
         let currentVideoId = null;
         let adInterval;
@@ -788,11 +954,11 @@
         const progressContainer = document.getElementById('progress-container');
         const timeDisplay = document.getElementById('time-display');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
+
         const adCounter = document.getElementById('ad-counter');
-        const adCountText = document.getElementById('ad-count-text');
+        const adStatusHeader = document.getElementById('ad-status-header');
+        const adStatusSubtext = document.getElementById('ad-status-subtext');
         const adProgressBar = document.getElementById('ad-progress-bar');
-        const adSkipBtn = document.getElementById('ad-skip-btn');
-        const skipTimerDisplay = document.getElementById('skip-timer');
         const rulesBtn = document.getElementById('rules-btn');
 
         const replayOverlay = document.getElementById('replay-overlay');
@@ -892,20 +1058,6 @@
                 totalAdsCount = 1;
                 showAd();
             });
-            
-            adSkipBtn.addEventListener('click', () => {
-                if (secondsLeft <= 0) {
-                    clearInterval(adInterval);
-                    adCounter.style.display = 'none';
-                    
-                    // Trigger Monetag Ads
-                    show_10518940().then(() => {
-                        handleAdComplete();
-                    }).catch(() => {
-                        handleAdComplete(); // Fallback play
-                    });
-                }
-            });
         }
 
         function handleAdComplete() {
@@ -933,15 +1085,40 @@
             controlsTimeout = setTimeout(hideControls, 4000);
         }
         
+        function getProfileHeaderHTML() {
+            const user = tg.initDataUnsafe?.user;
+            let displayName = "Guest";
+            let photoUrl = "";
+
+            if (user) {
+                displayName = user.first_name || "User";
+                photoUrl = user.photo_url || "";
+            }
+
+            if (!photoUrl) {
+                photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FF3366&color=ffffff&bold=true`;
+            }
+
+            return `
+                <div class="user-profile">
+                    <span class="profile-name">${displayName}</span>
+                    <div class="avatar-container">
+                        <img class="profile-pic" src="${photoUrl}" alt="Avatar">
+                        <span class="online-dot"></span>
+                    </div>
+                </div>
+            `;
+        }
+        
         function showWelcomeMessage() {
             appContainer.innerHTML = `
                 <div class="welcome-container">
-                    <div style="font-size: 55px; margin-bottom: 10px;">👋</div>
-                    <h1 class="welcome-title">Welcome to Pron Hub BD</h1>
+                    <div class="welcome-icon">👋</div>
+                    <h1 class="welcome-title">Welcome to Video Conear</h1>
                     <p class="welcome-desc">
-                        আমাদের উচ্চমানের পোর্ট্রেট ভিডিওসমূহ উপভোগ করতে এবং নিয়মিত আপডেট পেতে মিনি অ্যাপে জয়েন করুন।
+                        Enjoy our curated selection of high-definition vertical video streams. Tap below to start your premium experience.
                     </p>
-                    <button class="welcome-btn" onclick="loadHomePage()">শুরু করুন / Get Started</button>
+                    <button class="welcome-btn" onclick="loadHomePage()">Get Started</button>
                 </div>
             `;
         }
@@ -950,17 +1127,17 @@
             appContainer.innerHTML = `
                 <div class="rules-container">
                     <button class="rules-close" id="rules-close-btn"><i class="fas fa-times"></i></button>
-                    <h2 class="rules-title">নির্দেশনা ও নিয়মাবলি / Rules</h2>
+                    <h2 class="rules-title">Streaming Guidelines</h2>
                     
                     <div class="important-note">
-                        <strong>জরুরি সতর্কতা:</strong> বিজ্ঞাপন এড়িয়ে বা কেটে গেলে ভিডিও প্লে হবে না। প্রতিটি বিজ্ঞাপনের শেষে অবশই কন্টিনিউ করতে হবে।
+                        <strong>Important Notice:</strong> Bypassing or closing ads prematurely will disrupt the stream and prevent the video from loading.
                     </div>
                     
                     <ul class="rules-list">
-                        <li>একটি নতুন ভিডিও প্লে করতে আপনাকে ২টি বিজ্ঞাপন অতিক্রম করতে হবে।</li>
-                        <li>পূর্বে দেখা যেকোনো ভিডিও পুনরায় ১টি বিজ্ঞাপন দেখে ওয়াচলিস্ট থেকে প্লে করতে পারেন।</li>
-                        <li>ভিডিওর শেষে ১০ সেকেন্ড সময় থাকবে, আপনি চাইলে ১টি বিজ্ঞাপন দেখে সাথে সাথেই ভিডিওটি পুনরায় প্লে করতে পারেন।</li>
-                        <li>সফলভাবে বিজ্ঞাপন দেখার পর ভিডিও স্বয়ংক্রিয়ভাবে আরম্ভ হবে।</li>
+                        <li>Watch 2 short interactive ads to load and stream any new video.</li>
+                        <li>Replay previously watched videos from your Watchlist by watching only 1 ad.</li>
+                        <li>An automatic 10-second replay overlay appears at the end of every video, letting you play it again with 1 ad.</li>
+                        <li>Once ads are successfully verified, your stream will start playing immediately.</li>
                     </ul>
                 </div>
             `;
@@ -982,16 +1159,17 @@
             let html = `
                 <div class="header">
                     <div class="header-top">
-                        <div class="logo">Pron Hub BD</div>
+                        <div class="logo">Video Conear</div>
+                        ${getProfileHeaderHTML()}
                     </div>
                     <div class="fancy-news-bar">
                         <div class="fancy-icon">📢</div>
                         <div class="fancy-text">
                             <div class="fancy-ticker">
                                 <span>
-                                    <strong>👋 স্বাগতম!</strong> ভিডিও দেখতে যথাক্রমে ২টি বিজ্ঞাপন সম্পন্ন করতে হবে। &nbsp;&nbsp;&nbsp;
-                                    <strong class="highlight">🔄 ভিডিও শেষে রি-প্লে অপশন পাবেন।</strong> &nbsp;&nbsp;&nbsp;
-                                    <strong>🏠 সম্পন্ন হবার পর পুনরায় হোমপেজে ফিরবে।</strong>
+                                    <strong>Welcome!</strong> Stream content by completing 2 short ads. &nbsp;&nbsp;&nbsp;
+                                    <strong class="highlight">🔄 Replay options are available at the end.</strong> &nbsp;&nbsp;&nbsp;
+                                    <strong>🏠 Auto-returns to the homepage when finished.</strong>
                                 </span>
                             </div>
                         </div>
@@ -1003,7 +1181,7 @@
                 html += `
                     <div class="empty-state">
                         <div class="empty-icon"><i class="far fa-folder-open"></i></div>
-                        <div class="empty-text">সমস্ত উপলব্ধ ভিডিও দেখা শেষ! ওয়াচলিস্ট চেক করুন।</div>
+                        <div class="empty-text">You've caught up! No more unwatched streams are available. Check your Watchlist to replay saved videos.</div>
                     </div>
                 `;
             } else {
@@ -1012,10 +1190,10 @@
                     html += `
                         <div class="post-card">
                             <div class="thumbnail-container">
-                                <img src="${post.thumbnail}" class="post-thumbnail" alt="Thumb">
+                                <img src="${post.thumbnail}" class="post-thumbnail" alt="Video Thumbnail">
                                 <div class="watch-overlay">
                                     <button class="watch-btn" onclick="triggerWatchFlow('${post.id}', 2)">
-                                        <i class="fas fa-play"></i> প্লে করুন
+                                        <i class="fas fa-play"></i> Watch Now
                                     </button>
                                 </div>
                             </div>
@@ -1027,11 +1205,11 @@
                 html += `
                     <div class="pagination">
                         <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                            <i class="fas fa-chevron-left"></i> পূর্ববর্তী
+                            <i class="fas fa-chevron-left"></i> Previous
                         </button>
-                        <span class="page-info">Page ${currentPage} / ${totalPages}</span>
+                        <span class="page-info">Page ${currentPage} of ${totalPages}</span>
                         <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
-                            পরবর্তী <i class="fas fa-chevron-right"></i>
+                            Next <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 `;
@@ -1045,7 +1223,7 @@
                 <div class="watchlist-container">
                     <div class="section-title">
                         <i class="fas fa-history"></i>
-                        পূর্বে দেখা ভিডিওসমূহ (Watchlist)
+                        Watch History (Watchlist)
                     </div>
             `;
             
@@ -1054,7 +1232,7 @@
                 html += `
                     <div class="empty-state">
                         <div class="empty-icon"><i class="far fa-clock"></i></div>
-                        <div class="empty-text">আপনি এখনও কোনো ভিডিও দেখেননি।</div>
+                        <div class="empty-text">No watch history found. Start exploring streams on the homepage!</div>
                     </div>
                 `;
             } else {
@@ -1069,13 +1247,17 @@
                 list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 list.forEach(item => {
-                    const dateStr = new Date(item.timestamp).toLocaleDateString();
+                    const dateStr = new Date(item.timestamp).toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
                     html += `
                         <div class="watchlist-item" onclick="triggerWatchFlow('${item.post.id}', 1)">
-                            <img src="${item.post.thumbnail}" class="watchlist-thumbnail" alt="Thumb">
+                            <img src="${item.post.thumbnail}" class="watchlist-thumbnail" alt="Thumbnail">
                             <div class="watchlist-info">
-                                <div class="watchlist-item-title">কন্টেন্ট আইডি: #${item.post.id}</div>
-                                <div class="watchlist-item-time">সংরক্ষণ: ${dateStr}</div>
+                                <div class="watchlist-item-title">Content ID: #${item.post.id}</div>
+                                <div class="watchlist-item-time">Watched: ${dateStr}</div>
                             </div>
                             <i class="fas fa-play" style="color: var(--primary); font-size: 16px;"></i>
                         </div>
@@ -1100,26 +1282,35 @@
         }
         
         function showAd() {
-            secondsLeft = 5;
-            skipTimerDisplay.textContent = secondsLeft;
-            adSkipBtn.style.display = 'none';
             adCounter.style.display = 'flex';
-            adCountText.textContent = `বিজ্ঞাপন ${totalAdsCount} অফ ${requiredAds}`;
             adProgressBar.style.width = '0%';
+            
+            // Set dynamic text depending on ad requirements
+            if (requiredAds === 2) {
+                adStatusHeader.innerHTML = `Loading Ad ${totalAdsCount} of 2 <span style="color: var(--primary);">(Step ${totalAdsCount}/2)</span>`;
+                adStatusSubtext.textContent = totalAdsCount === 1 
+                    ? "Both secure ad steps must be loaded to start streaming." 
+                    : "Final ad step. Secure connection is being established.";
+            } else {
+                adStatusHeader.innerHTML = `Loading Ad 1 of 1 <span style="color: var(--primary);">(Replay Step)</span>`;
+                adStatusSubtext.textContent = "Verifying watch history. Stream will launch in a moment.";
+            }
             
             let progress = 0;
             adInterval = setInterval(() => {
-                progress += 2;
+                progress += 2.5; // Controls the loading speed smoothly
                 adProgressBar.style.width = `${progress}%`;
-                
-                if (progress % 20 === 0 && secondsLeft > 0) {
-                    secondsLeft--;
-                    skipTimerDisplay.textContent = secondsLeft;
-                }
                 
                 if (progress >= 100) {
                     clearInterval(adInterval);
-                    adSkipBtn.style.display = 'block';
+                    adCounter.style.display = 'none'; // Hide loader smoothly
+                    
+                    // Trigger Monetag Ads automatically at 100% progress
+                    show_10518940().then(() => {
+                        handleAdComplete();
+                    }).catch(() => {
+                        handleAdComplete(); // Fallback play if ad gets blocked or fails
+                    });
                 }
             }, 100);
         }
